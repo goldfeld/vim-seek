@@ -66,8 +66,8 @@ endfunction
 
 :nnoremap <silent> s :<C-U>call Seek(0)<CR>
 :onoremap <silent> s :<C-U>call Seek(1)<CR>
-" c is mnemonic for 'cut short [of the seek target]'
-:onoremap <silent> c :<C-U>call Seek(0)<CR>
+" x is mnemonic for 'cut short [of the seek target]'
+:onoremap <silent> x :<C-U>call Seek(0)<CR>
 :onoremap <silent> j :<C-U>call SeekJump()<CR>
 
 :nnoremap <silent> S :<C-U>call SeekBack(0)<CR>
