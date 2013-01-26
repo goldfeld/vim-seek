@@ -14,7 +14,7 @@ The single character substitution can be accomplished with either `1s` or `cl`. 
 
 # Advanced
 
-Aditional motions are provided as operator-pending-only. That is, they only work when used after `d`, `c` or `y`, and not by themselves.
+Additional motions are provided as operator-pending-only. That is, they only work when used after `d`, `c` or `y`, and not by themselves.
 
 The motion `c` is to seek what `t` is to `f`. Standing for 'cut short \[of the target\]', it acts up to the first character typed, but doesn't include it. This is in contrast to `s` itself, which does include the first character typed--to keep it consistent with `f` behavior--but not the second character.
 
