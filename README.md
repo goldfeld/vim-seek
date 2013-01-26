@@ -4,7 +4,7 @@ Seek is a vim plugin that aims to make inline navigation effortless. The motion 
 
 ## Motivation
 
-The idea was borne out of frustration with getting at arbitrary points in longer lines, especially ones where navigating by word--on top of needing precise counts--gets mangled by symbols. The motion `f` often misfires by taking you to an earlier spot than where you aimed. And a full `/` search is often too much for a simple seek, needing a extra `<Enter>` and leaving a highlight, and might take you away from the current line. Seek only works within the line.
+The idea was borne out of frustration with getting at arbitrary points in longer lines, especially ones where navigating by word--on top of needing precise counts--gets mangled by symbols. The motion `f` often misfires by taking you to an earlier spot than where you aimed. And a full `/` search is often too much for a simple seek, needing an extra `<Enter>` and leaving a highlight, and might take you away from the current line. Seek only works within the line.
 
 ## What about substitute?
 
