@@ -64,16 +64,16 @@ function! SeekJumpBack()
   endif
 endfunction
 
-:nnoremap s :<C-U>call Seek(0)<CR>
-:onoremap s :<C-U>call Seek(1)<CR>
+:nnoremap <silent> s :<C-U>call Seek(0)<CR>
+:onoremap <silent> s :<C-U>call Seek(1)<CR>
 " c is mnemonic for 'cut short [of the seek target]'
-:onoremap c :<C-U>call Seek(0)<CR>
-:onoremap j :<C-U>call SeekJump()<CR>
+:onoremap <silent> c :<C-U>call Seek(0)<CR>
+:onoremap <silent> j :<C-U>call SeekJump()<CR>
 
-:nnoremap S :<C-U>call SeekBack(0)<CR>
-:onoremap S :<C-U>call SeekBack(0)<CR>
-:onoremap C :<C-U>call SeekBack(1)<CR>
-:onoremap J :<C-U>call SeekJumpBack()<CR>
+:nnoremap <silent> S :<C-U>call SeekBack(0)<CR>
+:onoremap <silent> S :<C-U>call SeekBack(0)<CR>
+:onoremap <silent> C :<C-U>call SeekBack(1)<CR>
+:onoremap <silent> J :<C-U>call SeekJumpBack()<CR>
 
 " TODO allow remapping the keys
 "## Remapping Seek
