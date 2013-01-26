@@ -4,7 +4,7 @@ Seek is a vim plugin that aims to make inline navigation effortless. The motion 
 
 ## Motivation
 
-The idea was borne out of frustration with getting at arbitrary points in longer lines, especially ones where navigating by word--on top of needing precise counts--gets mangled by symbols. The motion `f` often misfires by taking you to an earlier spot than where you aimed. And a full `/` search is often too much for a simple seek, needing a extra `\<Enter\>` and leaving a highlight, and might take you away from the current line. Seek only works within the line.
+The idea was borne out of frustration with getting at arbitrary points in longer lines, especially ones where navigating by word--on top of needing precise counts--gets mangled by symbols. The motion `f` often misfires by taking you to an earlier spot than where you aimed. And a full `/` search is often too much for a simple seek, needing a extra `<Enter>` and leaving a highlight, and might take you away from the current line. Seek only works within the line.
 
 ## What about substitute?
 
@@ -21,3 +21,10 @@ The motion `c` is to seek what `t` is to `f`. Standing for 'cut short \[of the t
 Lastly but quite useful, `j` jumps to the next word containing the characters typed, acting on the whole word. It's the equivalent of `iw`, but sniping the target from a distance. Typing `cjth` takes you to the next word contaiting "th", deleting it and leaving you in insert mode.
 
 As expected, `c` and `j` are complemented by the reversed `C` and `J`.
+
+# Planned next
+
+* Customization to define other keys for the mappings.
+* Repeating the last seek with `;` and `,` (same keys used for `f` and `t`).
+* (Optional) Respect user's `ignorecase` and `smartcase` settings, so that you can seek to a capital letter by typing the lowercase character.
+* (Under consideration) Making `yj{ab}` a completely remote operation, allowing you to yank a word from a distance without going there, which should be useful if you mean to paste it to your current position. `dj{ab}` could also get such a treatment.
