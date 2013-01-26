@@ -12,6 +12,10 @@ Vim maps the key `s` to substitute. That it is the perfect mnemonic to seek is a
 
 The single character substitution can be accomplished with either `1s` or `cl`. And `S`, which is remapped to seek backwards, is completely substituted by `cc`.
 
+## I already use EasyMotion..
+
+Seek solves a different problem, and both are powerful tools. I use EasyMotion myself and love it--it's great for navigating across lines and around the file. But within the line, seek has more speed, for a very important reason: with seek you already know the keys you need to type before you even type `s`. Using EasyMotion there's a split second delay for it to generate the targets and another for your brain to process them. With seek you just type three quick keystrokes; you already know what to type.
+
 # Advanced
 
 Additional motions are provided as operator-pending-only. That is, they only work when used after `d`, `c` or `y`, and not by themselves.
