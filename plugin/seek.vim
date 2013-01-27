@@ -15,7 +15,7 @@ let g:loaded_seek = 1
 " TODO https://github.com/vim-scripts/InsertChar/blob/master/plugin/InsertChar.vim
 " TODO follow ignorecase and smartcase rules for alpha characters (and add to readme)
 " TODO remote yank option for the 'yc' motion
-function! Seek(plus)
+function! s:seek(plus)
   if v:count >= 1
     execute 'normal! '.v:count.'x'
     startinsert
@@ -31,7 +31,7 @@ function! Seek(plus)
   endif
 endfunction
 
-function! SeekBack(plus)
+function! s:seekBack(plus)
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
@@ -42,7 +42,7 @@ function! SeekBack(plus)
   endif
 endfunction
 
-function! SeekJump()
+function! s:seekJump()
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
@@ -53,7 +53,7 @@ function! SeekJump()
   endif
 endfunction
 
-function! SeekJumpBack()
+function! s:seekJumpBack()
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
@@ -64,16 +64,16 @@ function! SeekJumpBack()
   endif
 endfunction
 
-nnoremap <silent> s :<C-U>call Seek(0)<CR>
-onoremap <silent> s :<C-U>call Seek(1)<CR>
+nnoremap <silent> s :<C-U>call <SID>seek(0)<CR>
+onoremap <silent> s :<C-U>call <SID>seek(1)<CR>
 " c is mnemonic for 'cut short [of the seek target]'
-onoremap <silent> c :<C-U>call Seek(0)<CR>
-onoremap <silent> j :<C-U>call SeekJump()<CR>
+onoremap <silent> c :<C-U>call <SID>seek(0)<CR>
+onoremap <silent> j :<C-U>call <SID>seekJump()<CR>
 
-nnoremap <silent> S :<C-U>call SeekBack(0)<CR>
-onoremap <silent> S :<C-U>call SeekBack(0)<CR>
-onoremap <silent> C :<C-U>call SeekBack(1)<CR>
-onoremap <silent> J :<C-U>call SeekJumpBack()<CR>
+nnoremap <silent> S :<C-U>call <SID>seekBack(0)<CR>
+onoremap <silent> S :<C-U>call <SID>seekBack(0)<CR>
+onoremap <silent> C :<C-U>call <SID>seekBack(1)<CR>
+onoremap <silent> J :<C-U>call <SID>seekJumpBack()<CR>
 
 " TODO allow remapping the keys
 "## Remapping Seek
@@ -83,12 +83,12 @@ onoremap <silent> J :<C-U>call SeekJumpBack()<CR>
 "You can change seek's default mapping in your vimrc:
 "
 "  let g:SeekForward = '\'
-"  let g:SeekBackward = '|'
+"  let g:s:seekBackward = '|'
 "
 "  let g:SeekCutShortForward = '|'
 "  let g:SeekCutShortBackward = '|'
 "
-"  let g:SeekJumpForward = '
+"  let g:s:seekJumpForward = '
 "
 "
 "  <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
