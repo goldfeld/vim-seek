@@ -43,14 +43,19 @@ function! s:seekBack(plus)
 endfunction
 
 function! s:seekJump()
-  let c1 = getchar()
-  let c2 = getchar()
-  let line = getline('.')
-  let pos = getpos('.')[2]
-  let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
-  if l:seek != -1
-    execute 'normal! 0'.(l:pos + l:seek).'lviw'
-  endif
+  if v:count >= 1
+    execute 'normal! '.v:count.'x'
+    startinsert
+  else
+		let c1 = getchar()
+		let c2 = getchar()
+		let line = getline('.')
+		let pos = getpos('.')[2]
+		let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
+		if l:seek != -1
+			execute 'normal! 0'.(l:pos + l:seek).'lviw'
+		endif
+	endif
 endfunction
 
 function! s:seekJumpBack()
@@ -86,12 +91,12 @@ if !get(g:, 'seek_no_default_key_mappings', 0)
   omap <silent> s <Plug>(seek-seek)
   " x is mnemonic for 'cut short [of the seek target]'
   omap <silent> x <Plug>(seek-seek-cut)
-  omap <silent> j <Plug>(seek-jump)
+  omap <silent> o <Plug>(seek-jump)
 
   nmap <silent> S <Plug>(seek-back)
   omap <silent> S <Plug>(seek-back)
   omap <silent> X <Plug>(seek-back-cut)
-  omap <silent> J <Plug>(seek-jump-back)
+  omap <silent> O <Plug>(seek-jump-back)
 endif
 
 " TODO allow remapping the keys
