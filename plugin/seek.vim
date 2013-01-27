@@ -72,7 +72,7 @@ endfunction
 
 :nnoremap <silent> S :<C-U>call SeekBack(0)<CR>
 :onoremap <silent> S :<C-U>call SeekBack(0)<CR>
-:onoremap <silent> C :<C-U>call SeekBack(1)<CR>
+:onoremap <silent> X :<C-U>call SeekBack(1)<CR>
 :onoremap <silent> J :<C-U>call SeekJumpBack()<CR>
 
 " TODO allow remapping the keys
