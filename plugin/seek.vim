@@ -3,7 +3,7 @@
 " Description:   Motion for seeking to a pair of characters in the current line.
 " Author:        Vic Goldfeld <github.com/goldfeld>
 " Version:       0.2
-" ReleaseDate: 	 2013-01-26
+" ReleaseDate:   2013-01-26
 " License:       Licensed under the same terms as Vim itself.
 " ==============================================================================
 
@@ -18,17 +18,17 @@ let g:loaded_seek = 1
 function! Seek(plus)
   if v:count >= 1
     execute 'normal! '.v:count.'x'
-		startinsert
-	else
-		let c1 = getchar()
-		let c2 = getchar()
-		let line = getline('.')
-		let pos = getpos('.')[2]
-		let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
-		if l:seek != -1
-			execute 'normal! 0'.(l:pos + l:seek + a:plus).'l'
-		endif
-	endif
+    startinsert
+  else
+    let c1 = getchar()
+    let c2 = getchar()
+    let line = getline('.')
+    let pos = getpos('.')[2]
+    let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
+    if l:seek != -1
+      execute 'normal! 0'.(l:pos + l:seek + a:plus).'l'
+    endif
+  endif
 endfunction
 
 function! SeekBack(plus)
@@ -43,14 +43,14 @@ function! SeekBack(plus)
 endfunction
 
 function! SeekJump()
-	let c1 = getchar()
-	let c2 = getchar()
-	let line = getline('.')
-	let pos = getpos('.')[2]
-	let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
-	if l:seek != -1
-		execute 'normal! 0'.(l:pos + l:seek).'lviw'
-	endif
+  let c1 = getchar()
+  let c2 = getchar()
+  let line = getline('.')
+  let pos = getpos('.')[2]
+  let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
+  if l:seek != -1
+    execute 'normal! 0'.(l:pos + l:seek).'lviw'
+  endif
 endfunction
 
 function! SeekJumpBack()
@@ -82,16 +82,16 @@ endfunction
 "
 "You can change seek's default mapping in your vimrc:
 "
-"	let g:SeekForward = '\'
-"	let g:SeekBackward = '|'
+"  let g:SeekForward = '\'
+"  let g:SeekBackward = '|'
 "
-"	let g:SeekCutShortForward = '|'
-"	let g:SeekCutShortBackward = '|'
+"  let g:SeekCutShortForward = '|'
+"  let g:SeekCutShortBackward = '|'
 "
-"	let g:SeekJumpForward = '
+"  let g:SeekJumpForward = '
 "
 "
-"	<cursor>L{a}rem ipsum d{b}l{c}r sit amet.
+"  <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
 "
 "[link to other plugins](http://blabla.com)
 "![animated demonstration](http://blablable.com)
