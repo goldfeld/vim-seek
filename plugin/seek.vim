@@ -64,16 +64,35 @@ function! s:seekJumpBack()
   endif
 endfunction
 
-nnoremap <silent> s :<C-U>call <SID>seek(0)<CR>
-onoremap <silent> s :<C-U>call <SID>seek(1)<CR>
-" c is mnemonic for 'cut short [of the seek target]'
-onoremap <silent> c :<C-U>call <SID>seek(0)<CR>
-onoremap <silent> j :<C-U>call <SID>seekJump()<CR>
+silent! nnoremap <unique> <Plug>(seek-seek)
+      \ :<C-U>call <SID>seek(0)<CR>
+silent! onoremap <unique> <Plug>(seek-seek)
+      \ :<C-U>call <SID>seek(1)<CR>
+silent! onoremap <unique> <Plug>(seek-seek-cut)
+      \ :<C-U>call <SID>seek(0)<CR>
+silent! onoremap <unique> <Plug>(seek-jump)
+      \ :<C-U>call <SID>seekJump()<CR>
+silent! nnoremap <unique> <Plug>(seek-back)
+      \ :<C-U>call <SID>seekBack(0)<CR>
+silent! onoremap <unique> <Plug>(seek-back)
+      \ :<C-U>call <SID>seekBack(0)<CR>
+silent! onoremap <unique> <Plug>(seek-back-cut)
+      \ :<C-U>call <SID>seekBack(1)<CR>
+silent! onoremap <unique> <Plug>(seek-jump-back)
+      \ :<C-U>call <SID>seekJumpBack()<CR>
 
-nnoremap <silent> S :<C-U>call <SID>seekBack(0)<CR>
-onoremap <silent> S :<C-U>call <SID>seekBack(0)<CR>
-onoremap <silent> C :<C-U>call <SID>seekBack(1)<CR>
-onoremap <silent> J :<C-U>call <SID>seekJumpBack()<CR>
+if !get(g:, 'seek_no_default_key_mappings', 0)
+  nmap <silent> s <Plug>(seek-seek)
+  omap <silent> s <Plug>(seek-seek)
+  " c is mnemonic for 'cut short [of the seek target]'
+  omap <silent> c <Plug>(seek-seek)
+  omap <silent> j <Plug>(seek-jump)
+
+  nmap <silent> S <Plug>(seek-back)
+  omap <silent> S <Plug>(seek-back)
+  omap <silent> C <Plug>(seek-back-cut)
+  omap <silent> J <Plug>(seek-jump-back)
+endif
 
 " TODO allow remapping the keys
 "## Remapping Seek
