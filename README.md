@@ -22,7 +22,7 @@ Additional motions are provided as operator-pending-only. That is, they only wor
 
 The motion `x` is to seek what `t` is to `f`. Standing for 'cut short \[of the target\]', it acts up to the first character typed, but doesn't include it. This is in contrast to `s` itself, which does include the first character typed--to keep it consistent with `f` behavior--but not the second character.
 
-Lastly but quite useful, `o` jumps out to the next word containing the characters typed, acting on the whole word. It's the equivalent of `iw`, but sniping the target from a distance. Typing `code` takes you to the next word containing "de", deleting it and leaving you in insert mode.
+Lastly but quite useful, `o` jumps out to the next word containing the characters typed, acting on the whole word. It's the equivalent of `aw`, but sniping the target from a distance. Typing `code` takes you to the next word containing "de", deleting it and leaving you in insert mode.
 
 As expected, `x` and `o` are complemented by the reversed `X` and `O`.
 

@@ -53,7 +53,7 @@ function! s:seekJump()
 		let pos = getpos('.')[2]
 		let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
 		if l:seek != -1
-			execute 'normal! 0'.(l:pos + l:seek).'lviw'
+			execute 'normal! 0'.(l:pos + l:seek).'lvaw'
 		endif
 	endif
 endfunction
@@ -65,7 +65,7 @@ function! s:seekJumpBack()
   let pos = getpos('.')[2]
   let seek = strridx(l:line[: l:pos + 1], nr2char(l:c1).nr2char(l:c2))
   if l:seek != -1
-    execute 'normal! 0'.l:seek.'lviw'
+    execute 'normal! 0'.l:seek.'lvaw'
   endif
 endfunction
 
