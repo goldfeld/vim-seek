@@ -58,7 +58,7 @@ function! s:seekJump()
 	endif
 endfunction
 
-function! s:seekJumpBack()
+function! s:seekBackJump()
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
@@ -77,27 +77,37 @@ silent! onoremap <unique> <Plug>(seek-seek-cut)
       \ :<C-U>call <SID>seek(0)<CR>
 silent! onoremap <unique> <Plug>(seek-jump)
       \ :<C-U>call <SID>seekJump()<CR>
+
 silent! nnoremap <unique> <Plug>(seek-back)
       \ :<C-U>call <SID>seekBack(0)<CR>
 silent! onoremap <unique> <Plug>(seek-back)
       \ :<C-U>call <SID>seekBack(0)<CR>
 silent! onoremap <unique> <Plug>(seek-back-cut)
       \ :<C-U>call <SID>seekBack(1)<CR>
-silent! onoremap <unique> <Plug>(seek-jump-back)
-      \ :<C-U>call <SID>seekJumpBack()<CR>
+silent! onoremap <unique> <Plug>(seek-back-jump)
+      \ :<C-U>call <SID>seekBackJump()<CR>
 
-if !get(g:, 'seek_no_default_key_mappings', 0)
-  nmap <silent> s <Plug>(seek-seek)
-  omap <silent> s <Plug>(seek-seek)
-  " x is mnemonic for 'cut short [of the seek target]'
-  omap <silent> x <Plug>(seek-seek-cut)
-  omap <silent> o <Plug>(seek-jump)
 
-  nmap <silent> S <Plug>(seek-back)
-  omap <silent> S <Plug>(seek-back)
-  omap <silent> X <Plug>(seek-back-cut)
-  omap <silent> O <Plug>(seek-jump-back)
-endif
+let seekSeek = get(g:, 'SeekKey', 's')
+execute "nmap <silent> ".seekSeek."<Plug>(seek-seek)"
+execute "omap <silent> ".seekSeek."<Plug>(seek-seek)"
+
+let seekCut = get(g:, 'SeekCutShortKey', 'x')
+execute "omap <silent> ".seekCut."<Plug>(seek-seek-cut)"
+
+let seekJumpPA = get(g:, 'seekJumpPresentialAroundKey', 'o')
+execute "omap <silent> ".seekJumpPA."<Plug>(seek-jump)"
+
+
+let seekBack = get(g:, 'SeekBackKey', 'S')
+execute "nmap <silent> ".seekBack."<Plug>(seek-back)"
+execute "omap <silent> ".seekBack."<Plug>(seek-back)"
+
+let seekBackCut = get(g:, 'SeekBackCutShortKey', 'X')
+execute "omap <silent> ".seekBackCut."<Plug>(seek-back-cut)"
+
+let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
+execute "omap <silent> ".seekBackJumpPA."<Plug>(seek-back-jump)"
 
 " TODO allow remapping the keys
 "## Remapping Seek
