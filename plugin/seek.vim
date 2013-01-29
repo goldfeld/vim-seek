@@ -12,11 +12,16 @@ if exists('g:loaded_seek') || &cp
 endif
 let g:loaded_seek = 1
 
+" Set sensible default value for substitution disable configuration option
+if !exists('g:seek_subst_disable')
+  let g:seek_subst_disable = 0
+endif
+
 " TODO https://github.com/vim-scripts/InsertChar/blob/master/plugin/InsertChar.vim
 " TODO follow ignorecase and smartcase rules for alpha characters (and add to readme)
 " TODO remote yank option for the 'yc' motion
 function! s:seek(plus)
-  if v:count >= 1
+  if v:count >= 1 && !g:seek_subst_disable
     execute 'normal! '.v:count.'x'
     startinsert
   else
@@ -24,9 +29,14 @@ function! s:seek(plus)
     let c2 = getchar()
     let line = getline('.')
     let pos = getpos('.')[2]
-    let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
+    let cnt = v:count ? v:count : 1
+    while cnt > 0
+      let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
+      let cnt = l:cnt - 1
+      let pos = l:pos + l:seek + 2
+    endwhile
     if l:seek != -1
-      execute 'normal! 0'.(l:pos + l:seek + a:plus).'l'
+      execute 'normal! 0'.(l:pos - 2 + a:plus).'l'
     endif
   endif
 endfunction
@@ -36,26 +46,37 @@ function! s:seekBack(plus)
   let c2 = getchar()
   let line = getline('.')
   let pos = getpos('.')[2]
-  let seek = strridx(l:line[: l:pos - 1], nr2char(l:c1).nr2char(l:c2))
+  let cnt = v:count ? v:count : 1
+  while cnt > 0
+    let seek = strridx(l:line[: l:pos - 1], nr2char(l:c1).nr2char(l:c2))
+    let cnt = l:cnt - 1
+    let pos = l:seek - 2
+  endwhile
   if l:seek != -1
-    execute 'normal! 0'.(l:seek + a:plus).'l'
+    execute 'normal! 0'.(l:pos + 2 + a:plus).'l'
   endif
 endfunction
 
 function! s:seekJump()
-  if v:count >= 1
+  if v:count >= 1 && !g:seek_subst_disable
     execute 'normal! '.v:count.'x'
     startinsert
   else
-		let c1 = getchar()
-		let c2 = getchar()
-		let line = getline('.')
-		let pos = getpos('.')[2]
-		let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
-		if l:seek != -1
-			execute 'normal! 0'.(l:pos + l:seek).'lvaw'
-		endif
-	endif
+    echom v:count
+    let c1 = getchar()
+    let c2 = getchar()
+    let line = getline('.')
+    let pos = getpos('.')[2]
+    let cnt = v:count ? v:count : 1
+    while cnt > 0
+      let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
+      let cnt = l:cnt - 1
+      let pos = l:pos + l:seek + 2
+    endwhile
+    if l:seek != -1
+      execute 'normal! 0'.(l:pos - 2 + a:plus).'l'
+    endif
+  endif
 endfunction
 
 function! s:seekJumpBack()

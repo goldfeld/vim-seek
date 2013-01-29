@@ -8,7 +8,7 @@ The idea was borne out of frustration with getting at arbitrary points in longer
 
 ## What about substitute?
 
-Vim maps the key `s` to substitute. That it is the perfect mnemonic to seek is a fortunate coincidence, but the choice was made because substitute (without a count) is an often inefficient command, being--ironically--easily substituted by others. Seek doesn't take a count, so whenever you supply a count to `s` it will map to the substitute command. 
+Vim maps the key `s` to substitute. That it is the perfect mnemonic to seek is a fortunate coincidence, but the choice was made because substitute (without a count) is an often inefficient command, being--ironically--easily substituted by others. Seek doesn't take a count, so whenever you supply a count to `s` it will map to the substitute command.  If you don't use the substitute commmand at all, you can add `let g:seek_subst_disable = 1` to your `.vimrc` in order to allow counts for actual seeks.
 
 The single character substitution can be accomplished with either `1s` or `cl`. And `S`, which is remapped to seek backwards, is completely substituted by `cc`.
 
