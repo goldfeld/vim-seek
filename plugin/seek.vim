@@ -137,7 +137,7 @@ command! SeekBackCut :call
 
 command! SeekJumpPresentialIw :call
       \ :<C-U>call <SID>seekJumpPresential('iw')<CR>
-command! SeekJumpPresentialAw:call
+command! SeekJumpPresentialAw :call
       \ :<C-U>call <SID>seekJumpPresential('aw')<CR>
 command! SeekJumpRemoteIw :call
       \ :<C-U>call <SID>seekJumpRemote('iw')<CR>
