@@ -71,6 +71,10 @@ function! s:seekJumpRemote(textobj)
   let cursor = getpos('.')
   let pos = l:cursor[2]
   let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
+
+  let cmd = "execute 'call cursor(".l:cursor[1].", ".l:pos.")'"
+  call s:registerCommand('CursorMoved', cmd, 'remoteJump')
+  
   if l:seek != -1
     execute 'normal! 0'.(l:pos + l:seek).'lv'.a:textobj
   endif
@@ -83,20 +87,33 @@ function! s:seekBackJumpRemote(textobj)
   let cursor = getpos('.')
   let pos = l:cursor[2]
   let seek = strridx(l:line[: l:pos - 1], nr2char(l:c1).nr2char(l:c2))
+
+  let cmd = "execute 'call cursor(".l:cursor[1].", ".l:pos.")'"
+  call s:registerCommand('CursorMoved', cmd, 'remoteJump')
+
   if l:seek != -1
     execute 'normal! 0'.l:seek.'lv'.a:textobj
   endif
 endfunction
 
-function! s:seekRemoteReturn()
-	let cur = get(g:, 'seek_remote_return', [])
-	if !empty(l:cur)
-		call cursor(l:cur)
-		unlet g:seek_remote_return
-	endif
+
+" credit: Luc Hermitte
+" http://code.google.com/p/lh-vim/source/search?q=register_for&origq=register_for&btnG=Search+Trunk
+function! s:registerCommand(event, cmd, group)
+  let group = a:group.'_once'
+  let s:{group} = 0
+  exe 'augroup '.group
+  au!
+  exe 'au '.a:event.' '.expand('%:p').' call s:registeredOnce('.string(a:cmd).','.string(group).')'
+  augroup END
 endfunction
-
-
+function! s:registeredOnce(cmd, group)
+  " We can't delete the current  autocommand => increment a counter
+  if !exists('s:'.a:group) || s:{a:group} == 0
+    let s:{a:group} = 1
+    exe a:cmd
+  endif
+endfunction
 
 
 silent! nnoremap <unique> <Plug>(seek-seek)
