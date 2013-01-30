@@ -58,9 +58,9 @@ function! s:seekBackJumpPresential(textobj)
   let c2 = getchar()
   let line = getline('.')
   let pos = getpos('.')[2]
-  let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
+  let seek = strridx(l:line[: l:pos - 1], nr2char(l:c1).nr2char(l:c2))
   if l:seek != -1
-    execute 'normal! 0'.(l:pos + l:seek).'lv'.a:textobj
+    execute 'normal! 0'.l:seek.'lv'.a:textobj
   endif
 endfunction
 
@@ -68,26 +68,24 @@ function! s:seekJumpRemote(textobj)
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
-	let cursor = getpos('.')
+  let cursor = getpos('.')
   let pos = l:cursor[2]
   let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
   if l:seek != -1
     execute 'normal! 0'.(l:pos + l:seek).'lv'.a:textobj
   endif
-  let g:seek_remote_return = l:cursor[1:]
 endfunction
 
 function! s:seekBackJumpRemote(textobj)
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
-	let cursor = getpos('.')
+  let cursor = getpos('.')
   let pos = l:cursor[2]
-  let seek = stridx(l:line[l:pos :], nr2char(l:c1).nr2char(l:c2))
+  let seek = strridx(l:line[: l:pos - 1], nr2char(l:c1).nr2char(l:c2))
   if l:seek != -1
-    execute 'normal! 0'.(l:pos + l:seek).'lv'.a:textobj
+    execute 'normal! 0'.l:seek.'lv'.a:textobj
   endif
-  let g:seek_remote_return = l:cursor[1:]
 endfunction
 
 function! s:seekRemoteReturn()
@@ -98,26 +96,7 @@ function! s:seekRemoteReturn()
 	endif
 endfunction
 
-let seekSeek = get(g:, 'SeekKey', 's')
-execute "nmap <silent> ".seekSeek." <Plug>(seek-seek)"
-execute "omap <silent> ".seekSeek." <Plug>(seek-seek)"
 
-let seekCut = get(g:, 'SeekCutShortKey', 'x')
-execute "omap <silent> ".seekCut." <Plug>(seek-seek-cut)"
-
-let seekJumpPA = get(g:, 'seekJumpPresentialAroundKey', 'o')
-execute "omap <silent> ".seekJumpPA." <Plug>(seek-jump)"
-
-
-let seekBack = get(g:, 'SeekBackKey', 'S')
-execute "nmap <silent> ".seekBack." <Plug>(seek-back)"
-execute "omap <silent> ".seekBack." <Plug>(seek-back)"
-
-let seekBackCut = get(g:, 'SeekBackCutShortKey', 'X')
-execute "omap <silent> ".seekBackCut." <Plug>(seek-back-cut)"
-
-let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
-execute "omap <silent> ".seekBackJumpPA." <Plug>(seek-back-jump)"
 
 
 silent! nnoremap <unique> <Plug>(seek-seek)
@@ -153,27 +132,43 @@ silent! onoremap <unique> <Plug>(seek-back-jump-presential-aw)
 silent! onoremap <unique> <Plug>(seek-back-jump-remote-aw)
       \ :<C-U>call <SID>seekBackJumpRemote('aw')<CR>
 
-if !get(g:, 'seek_no_default_key_mappings', 0)
-  nmap <silent> s <Plug>(seek-seek)
-  omap <silent> s <Plug>(seek-seek)
-  " x is mnemonic for 'cut short [of the seek target]'
-  omap <silent> x <Plug>(seek-seek-cut)
+let seekSeek = get(g:, 'SeekKey', 's')
+execute "nmap <silent> ".seekSeek." <Plug>(seek-seek)"
+execute "omap <silent> ".seekSeek." <Plug>(seek-seek)"
 
-  nmap <silent> S <Plug>(seek-back)
-  omap <silent> S <Plug>(seek-back)
-  omap <silent> X <Plug>(seek-back-cut)
+let seekCut = get(g:, 'SeekCutShortKey', 'x')
+execute "omap <silent> ".seekCut." <Plug>(seek-seek-cut)"
 
-  if get(g:, 'seek_enable_jumps', 0)
-    omap <silent> p <Plug>(seek-jump-presential-iw)
-    omap <silent> r <Plug>(seek-jump-remote-iw)
-    omap <silent> o <Plug>(seek-jump-presential-aw)
-    omap <silent> u <Plug>(seek-jump-remote-aw)
 
-    omap <silent> P <Plug>(seek-back-jump-presential-iw)
-    omap <silent> R <Plug>(seek-back-jump-remote-iw)
-    omap <silent> O <Plug>(seek-back-jump-presential-aw)
-    omap <silent> U <Plug>(seek-back-jump-remote-aw)
-  endif
+let seekBack = get(g:, 'SeekBackKey', 'S')
+execute "nmap <silent> ".seekBack." <Plug>(seek-back)"
+execute "omap <silent> ".seekBack." <Plug>(seek-back)"
+
+let seekBackCut = get(g:, 'SeekBackCutShortKey', 'X')
+execute "omap <silent> ".seekBackCut." <Plug>(seek-back-cut)"
+
+
+if get(g:, 'seek_enable_jumps', 0)
+  let seekJumpPI = get(g:, 'seekJumpPresentialInnerKey', 'p')
+  execute "omap <silent> ".seekJumpPI." <Plug>(seek-jump-presential-iw)"
+  let seekJumpRI = get(g:, 'seekJumpRemoteInnerKey', 'r')
+  execute "omap <silent> ".seekJumpRI." <Plug>(seek-jump-remote-iw)"
+
+  let seekJumpPA = get(g:, 'seekJumpPresentialAroundKey', 'o')
+  execute "omap <silent> ".seekJumpPA." <Plug>(seek-jump-presential-aw)"
+  let seekJumpRA = get(g:, 'seekJumpRemoteAroundKey', 'u')
+  execute "omap <silent> ".seekJumpRA." <Plug>(seek-jump-remote-aw)"
+
+
+  let seekBackJumpPI = get(g:, 'seekBackJumpPresentialInnerKey', 'P')
+  execute "omap <silent> ".seekBackJumpPI." <Plug>(seek-back-jump-presential-iw)"
+  let seekBackJumpRI = get(g:, 'seekBackJumpRemoteInnerKey', 'R')
+  execute "omap <silent> ".seekBackJumpRI." <Plug>(seek-back-jump-remote-iw)"
+
+  let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
+  execute "omap <silent> ".seekBackJumpPA." <Plug>(seek-back-jump-presential-aw)"
+  let seekBackJumpRA = get(g:, 'seekBackJumpPresentialInnerKey', 'U')
+  execute "omap <silent> ".seekBackJumpRA." <Plug>(seek-back-jump-remote-aw)"
 endif
 
 "  <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
