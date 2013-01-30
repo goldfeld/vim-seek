@@ -2,8 +2,8 @@
 " File:          plugin/seek.vim
 " Description:   Motion for seeking to a pair of characters in the current line.
 " Author:        Vic Goldfeld <github.com/goldfeld>
-" Version:       0.2
-" ReleaseDate:   2013-01-26
+" Version:       0.5
+" ReleaseDate:   2013-01-30
 " License:       Licensed under the same terms as Vim itself.
 " ==============================================================================
 
@@ -153,42 +153,48 @@ silent! onoremap <unique> <Plug>(seek-back-jump-presential-aw)
 silent! onoremap <unique> <Plug>(seek-back-jump-remote-aw)
       \ :<C-U>call <SID>seekBackJumpRemote('aw')<CR>
 
+"let seekKeys = get(g:, 'SeekKeys', '')
+"if len(seekKeys) > 0
+"	for key in split(seekKeys, ' ')
+"else
 let seekSeek = get(g:, 'SeekKey', 's')
-execute "nmap <silent> ".seekSeek." <Plug>(seek-seek)"
-execute "omap <silent> ".seekSeek." <Plug>(seek-seek)"
-
 let seekCut = get(g:, 'SeekCutShortKey', 'x')
-execute "omap <silent> ".seekCut." <Plug>(seek-seek-cut)"
-
 
 let seekBack = get(g:, 'SeekBackKey', 'S')
+let seekBackCut = get(g:, 'SeekBackCutShortKey', 'X')
+
+let seekJumpPI = get(g:, 'seekJumpPresentialInnerKey', 'p')
+let seekJumpRI = get(g:, 'seekJumpRemoteInnerKey', 'r')
+
+let seekJumpPA = get(g:, 'seekJumpPresentialAroundKey', 'o')
+let seekJumpRA = get(g:, 'seekJumpRemoteAroundKey', 'u')
+
+let seekBackJumpPI = get(g:, 'seekBackJumpPresentialInnerKey', 'P')
+let seekBackJumpRI = get(g:, 'seekBackJumpRemoteInnerKey', 'R')
+
+let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
+let seekBackJumpRA = get(g:, 'seekBackJumpPresentialInnerKey', 'U')
+"endif
+
+execute "nmap <silent> ".seekSeek." <Plug>(seek-seek)"
+execute "omap <silent> ".seekSeek." <Plug>(seek-seek)"
+execute "omap <silent> ".seekCut." <Plug>(seek-seek-cut)"
+
 execute "nmap <silent> ".seekBack." <Plug>(seek-back)"
 execute "omap <silent> ".seekBack." <Plug>(seek-back)"
-
-let seekBackCut = get(g:, 'SeekBackCutShortKey', 'X')
 execute "omap <silent> ".seekBackCut." <Plug>(seek-back-cut)"
 
-
 if get(g:, 'seek_enable_jumps', 0)
-  let seekJumpPI = get(g:, 'seekJumpPresentialInnerKey', 'p')
   execute "omap <silent> ".seekJumpPI." <Plug>(seek-jump-presential-iw)"
-  let seekJumpRI = get(g:, 'seekJumpRemoteInnerKey', 'r')
   execute "omap <silent> ".seekJumpRI." <Plug>(seek-jump-remote-iw)"
 
-  let seekJumpPA = get(g:, 'seekJumpPresentialAroundKey', 'o')
   execute "omap <silent> ".seekJumpPA." <Plug>(seek-jump-presential-aw)"
-  let seekJumpRA = get(g:, 'seekJumpRemoteAroundKey', 'u')
   execute "omap <silent> ".seekJumpRA." <Plug>(seek-jump-remote-aw)"
 
-
-  let seekBackJumpPI = get(g:, 'seekBackJumpPresentialInnerKey', 'P')
   execute "omap <silent> ".seekBackJumpPI." <Plug>(seek-back-jump-presential-iw)"
-  let seekBackJumpRI = get(g:, 'seekBackJumpRemoteInnerKey', 'R')
   execute "omap <silent> ".seekBackJumpRI." <Plug>(seek-back-jump-remote-iw)"
 
-  let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
   execute "omap <silent> ".seekBackJumpPA." <Plug>(seek-back-jump-presential-aw)"
-  let seekBackJumpRA = get(g:, 'seekBackJumpPresentialInnerKey', 'U')
   execute "omap <silent> ".seekBackJumpRA." <Plug>(seek-back-jump-remote-aw)"
 endif
 
