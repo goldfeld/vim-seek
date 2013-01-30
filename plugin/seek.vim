@@ -53,7 +53,7 @@ function! s:seekJumpPresential(textobj)
   endif
 endfunction
 
-function! s:seekJumpBackPresential(textobj)
+function! s:seekBackJumpPresential(textobj)
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
@@ -77,7 +77,7 @@ function! s:seekJumpRemote(textobj)
   let g:seek_remote_return = l:cursor[1:]
 endfunction
 
-function! s:seekJumpBackRemote(textobj)
+function! s:seekBackJumpRemote(textobj)
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
@@ -98,6 +98,28 @@ function! s:seekRemoteReturn()
 	endif
 endfunction
 
+let seekSeek = get(g:, 'SeekKey', 's')
+execute "nmap <silent> ".seekSeek." <Plug>(seek-seek)"
+execute "omap <silent> ".seekSeek." <Plug>(seek-seek)"
+
+let seekCut = get(g:, 'SeekCutShortKey', 'x')
+execute "omap <silent> ".seekCut." <Plug>(seek-seek-cut)"
+
+let seekJumpPA = get(g:, 'seekJumpPresentialAroundKey', 'o')
+execute "omap <silent> ".seekJumpPA." <Plug>(seek-jump)"
+
+
+let seekBack = get(g:, 'SeekBackKey', 'S')
+execute "nmap <silent> ".seekBack." <Plug>(seek-back)"
+execute "omap <silent> ".seekBack." <Plug>(seek-back)"
+
+let seekBackCut = get(g:, 'SeekBackCutShortKey', 'X')
+execute "omap <silent> ".seekBackCut." <Plug>(seek-back-cut)"
+
+let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
+execute "omap <silent> ".seekBackJumpPA." <Plug>(seek-back-jump)"
+
+
 silent! nnoremap <unique> <Plug>(seek-seek)
       \ :<C-U>call <SID>seek(0)<CR>
 silent! onoremap <unique> <Plug>(seek-seek)
@@ -112,6 +134,7 @@ silent! onoremap <unique> <Plug>(seek-back)
 silent! onoremap <unique> <Plug>(seek-back-cut)
       \ :<C-U>call <SID>seekBack(1)<CR>
 
+
 silent! onoremap <unique> <Plug>(seek-jump-presential-iw)
       \ :<C-U>call <SID>seekJumpPresential('iw')<CR>
 silent! onoremap <unique> <Plug>(seek-jump-presential-aw)
@@ -121,14 +144,14 @@ silent! onoremap <unique> <Plug>(seek-jump-remote-iw)
 silent! onoremap <unique> <Plug>(seek-jump-remote-aw)
       \ :<C-U>call <SID>seekJumpRemote('aw')<CR>
 
-silent! onoremap <unique> <Plug>(seek-jump-back-presential-iw)
-      \ :<C-U>call <SID>seekJumpBackPresential('iw')<CR>
-silent! onoremap <unique> <Plug>(seek-jump-back-remote-iw)
-      \ :<C-U>call <SID>seekJumpBackRemote('iw')<CR>
-silent! onoremap <unique> <Plug>(seek-jump-back-presential-aw)
-      \ :<C-U>call <SID>seekJumpBackPresential('aw')<CR>
-silent! onoremap <unique> <Plug>(seek-jump-back-remote-aw)
-      \ :<C-U>call <SID>seekJumpBackRemote('aw')<CR>
+silent! onoremap <unique> <Plug>(seek-back-jump-presential-iw)
+      \ :<C-U>call <SID>seekBackJumpPresential('iw')<CR>
+silent! onoremap <unique> <Plug>(seek-back-jump-remote-iw)
+      \ :<C-U>call <SID>seekBackJumpRemote('iw')<CR>
+silent! onoremap <unique> <Plug>(seek-back-jump-presential-aw)
+      \ :<C-U>call <SID>seekBackJumpPresential('aw')<CR>
+silent! onoremap <unique> <Plug>(seek-back-jump-remote-aw)
+      \ :<C-U>call <SID>seekBackJumpRemote('aw')<CR>
 
 if !get(g:, 'seek_no_default_key_mappings', 0)
   nmap <silent> s <Plug>(seek-seek)
@@ -146,29 +169,13 @@ if !get(g:, 'seek_no_default_key_mappings', 0)
     omap <silent> o <Plug>(seek-jump-presential-aw)
     omap <silent> u <Plug>(seek-jump-remote-aw)
 
-    omap <silent> P <Plug>(seek-jump-back-presential-iw)
-    omap <silent> R <Plug>(-jump-back-remote-iw)
-    omap <silent> O <Plug>(seek-jump-back-presential-aw)
-    omap <silent> U <Plug>(seek-jump-back-remote-aw)
+    omap <silent> P <Plug>(seek-back-jump-presential-iw)
+    omap <silent> R <Plug>(seek-back-jump-remote-iw)
+    omap <silent> O <Plug>(seek-back-jump-presential-aw)
+    omap <silent> U <Plug>(seek-back-jump-remote-aw)
   endif
 endif
 
-" TODO allow remapping the keys
-"## Remapping Seek
-"
-"If you wish to leave substitute alone, a good candidate is the `\`/`|` pair, for seeking forward and backwards, respectively.
-"
-"You can change seek's default mapping in your vimrc:
-"
-"  let g:SeekForward = '\'
-"  let g:s:seekBackward = '|'
-"
-"  let g:SeekCutShortForward = '|'
-"  let g:SeekCutShortBackward = '|'
-"
-"  let g:s:seekJumpForward = '
-"
-"
 "  <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
 "
 "[link to other plugins](http://blabla.com)

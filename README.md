@@ -12,6 +12,8 @@ Vim maps the key `s` to substitute. That it is the perfect mnemonic to seek is a
 
 The single character substitution can be accomplished with either `1s` or `cl`. And `S`, which is remapped to seek backwards, is completely substituted by `cc`.
 
+However, if you don't want to give up substitute, you can scroll down to the Customization section.
+
 ## I already use EasyMotion..
 
 Seek solves a different problem, and both are powerful tools. I use EasyMotion myself and love it--it's great for navigating across lines and around the file. But within the line, seek has more speed, for a very important reason: with seek you already know the keys you need to type before you even type `s`. Using EasyMotion there's a split second delay for it to generate the targets and another for your brain to process them. With seek you just type three quick keystrokes; you already know what to type.
@@ -33,9 +35,32 @@ To enable the jumping mappings you need to add the following to your vimrc: `let
 
 As expected, all these advanced mappings are complemented by their capital letter versions, which operate backwards.
 
+## Customization
+
+You can customize any of the keys that seek binds by adding lines such as the following to your vimrc.
+
+Change s and S:
+`let g:SeekKey = '<Space>'`
+`let g:SeekBackKey = '<S-Space>'` // note: <S-Space> doesn't work in terminal vim.
+
+Change x and X:
+`let g:SeekCutShortKey = '-'`
+`let g:SeekBackCutShortKey = '+'`
+
+Change o and O:
+`let g:seekJumpPresentialAroundKey = '<Leader>o'`
+`let g:seekBackJumpPresentialAroundKey = '<Leader>O'`
+
+Or you can use a shorthand version to redefine all seek keys:
+
+`let g:SeekKeys = '<Space> <S-Space> - + <Leader>o <Leader>O'`
+
+Though it must always follow the order, you can simply use the defaults for keys you don't want to change, and you can truncate the string to leave remaining unchanged:
+
+`let g:SeekKeys = 's S - +'` // will not change jump keys.
+
 # Planned next
 
-* Customization to define other keys for the mappings.
 * Repeating the last seek with `;` and `,` (same keys used for `f` and `t`).
 * (Optional) Respect user's `ignorecase` and `smartcase` settings, so that you can seek to a capital letter by typing the lowercase character.
 * Condensed jump mappings to allow you to use just one of `r` or `p` (or yet another key) for all jump motions, whereby you define which you want to be remote and which presential (e.g. `c` lends itself more to being presential, `y` to be remote, while `d` has good use of both).
