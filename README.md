@@ -40,26 +40,32 @@ As expected, all these advanced mappings are complemented by their capital lette
 You can customize any of the keys that seek binds by adding lines such as the following to your vimrc.
 
 Change s and S:
+
 `let g:SeekKey = '<Space>'`
 `let g:SeekBackKey = '<S-Space>'` // note: <S-Space> doesn't work in terminal vim.
 
 Change x and X:
+
 `let g:SeekCutShortKey = '-'`
 `let g:SeekBackCutShortKey = '+'`
 
 Change p and P:
+
 `let g:seekJumpPresentialInnerKey = '<Leader>p'`
 `let g:seekBackJumpPresentialInnerKey = '<Leader>P'`
 
 Change r and R:
+
 `let g:seekJumpRemoteInnerKey = '<Leader>r'`
 `let g:seekBackJumpRemoteInnerKey = '<Leader>R'`
 
 Change o and O:
+
 `let g:seekJumpPresentialAroundKey = '<Leader>o'`
 `let g:seekBackJumpPresentialAroundKey = '<Leader>O'`
 
 Change u and U
+
 `let g:seekJumpRemoteAroundKey = '<Leader>u'`
 `let g:seekBackJumpPresentialInnerKey = '<Leader>U'`
 
