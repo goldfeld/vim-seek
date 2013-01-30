@@ -43,6 +43,7 @@ function! s:seekBack(plus)
 endfunction
 
 function! s:seekJumpPresential(textobj)
+  if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
@@ -54,6 +55,7 @@ function! s:seekJumpPresential(textobj)
 endfunction
 
 function! s:seekBackJumpPresential(textobj)
+  if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
@@ -65,6 +67,7 @@ function! s:seekBackJumpPresential(textobj)
 endfunction
 
 function! s:seekJumpRemote(textobj)
+  if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
@@ -81,6 +84,7 @@ function! s:seekJumpRemote(textobj)
 endfunction
 
 function! s:seekBackJumpRemote(textobj)
+  if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
