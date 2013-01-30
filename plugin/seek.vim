@@ -69,6 +69,28 @@ function! s:seekBackJump()
   endif
 endfunction
 
+let seekSeek = get(g:, 'SeekKey', 's')
+execute "nmap <silent> ".seekSeek." <Plug>(seek-seek)"
+execute "omap <silent> ".seekSeek." <Plug>(seek-seek)"
+
+let seekCut = get(g:, 'SeekCutShortKey', 'x')
+execute "omap <silent> ".seekCut." <Plug>(seek-seek-cut)"
+
+let seekJumpPA = get(g:, 'seekJumpPresentialAroundKey', 'o')
+execute "omap <silent> ".seekJumpPA." <Plug>(seek-jump)"
+
+
+let seekBack = get(g:, 'SeekBackKey', 'S')
+execute "nmap <silent> ".seekBack." <Plug>(seek-back)"
+execute "omap <silent> ".seekBack." <Plug>(seek-back)"
+
+let seekBackCut = get(g:, 'SeekBackCutShortKey', 'X')
+execute "omap <silent> ".seekBackCut." <Plug>(seek-back-cut)"
+
+let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
+execute "omap <silent> ".seekBackJumpPA." <Plug>(seek-back-jump)"
+
+
 silent! nnoremap <unique> <Plug>(seek-seek)
       \ :<C-U>call <SID>seek(0)<CR>
 silent! onoremap <unique> <Plug>(seek-seek)
@@ -87,44 +109,6 @@ silent! onoremap <unique> <Plug>(seek-back-cut)
 silent! onoremap <unique> <Plug>(seek-back-jump)
       \ :<C-U>call <SID>seekBackJump()<CR>
 
-
-let seekSeek = get(g:, 'SeekKey', 's')
-execute "nmap <silent> ".seekSeek."<Plug>(seek-seek)"
-execute "omap <silent> ".seekSeek."<Plug>(seek-seek)"
-
-let seekCut = get(g:, 'SeekCutShortKey', 'x')
-execute "omap <silent> ".seekCut."<Plug>(seek-seek-cut)"
-
-let seekJumpPA = get(g:, 'seekJumpPresentialAroundKey', 'o')
-execute "omap <silent> ".seekJumpPA."<Plug>(seek-jump)"
-
-
-let seekBack = get(g:, 'SeekBackKey', 'S')
-execute "nmap <silent> ".seekBack."<Plug>(seek-back)"
-execute "omap <silent> ".seekBack."<Plug>(seek-back)"
-
-let seekBackCut = get(g:, 'SeekBackCutShortKey', 'X')
-execute "omap <silent> ".seekBackCut."<Plug>(seek-back-cut)"
-
-let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
-execute "omap <silent> ".seekBackJumpPA."<Plug>(seek-back-jump)"
-
-" TODO allow remapping the keys
-"## Remapping Seek
-"
-"If you wish to leave substitute alone, a good candidate is the `\`/`|` pair, for seeking forward and backwards, respectively.
-"
-"You can change seek's default mapping in your vimrc:
-"
-"  let g:SeekForward = '\'
-"  let g:s:seekBackward = '|'
-"
-"  let g:SeekCutShortForward = '|'
-"  let g:SeekCutShortBackward = '|'
-"
-"  let g:s:seekJumpForward = '
-"
-"
 "  <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
 "
 "[link to other plugins](http://blabla.com)
