@@ -47,15 +47,27 @@ Change x and X:
 `let g:SeekCutShortKey = '-'`
 `let g:SeekBackCutShortKey = '+'`
 
+Change p and P:
+`let g:seekJumpPresentialInnerKey = '<Leader>p'`
+`let g:seekBackJumpPresentialInnerKey = '<Leader>P'`
+
+Change r and R:
+`let g:seekJumpRemoteInnerKey = '<Leader>r'`
+`let g:seekBackJumpRemoteInnerKey = '<Leader>R'`
+
 Change o and O:
 `let g:seekJumpPresentialAroundKey = '<Leader>o'`
 `let g:seekBackJumpPresentialAroundKey = '<Leader>O'`
 
+Change u and U
+`let g:seekJumpRemoteAroundKey = '<Leader>u'`
+`let g:seekBackJumpPresentialInnerKey = '<Leader>U'`
+
 Or you can use a shorthand version to redefine all seek keys:
 
-`let g:SeekKeys = '<Space> <S-Space> - + <Leader>o <Leader>O'`
+`let g:SeekKeys = '<Space> <S-Space> - + <Leader>p <Leader>P' <Leader>r <Leader>R <Leader>o <Leader>O <Leader>u <Leader>U`
 
-Though it must always follow the order, you can simply use the defaults for keys you don't want to change, and you can truncate the string to leave remaining unchanged:
+Though it must always follow the order, you can simply use the defaults for keys you don't want to change, and you can truncate the string to leave the remaining unchanged:
 
 `let g:SeekKeys = 's S - +'` // will not change jump keys.
 
