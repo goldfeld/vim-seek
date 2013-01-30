@@ -120,38 +120,40 @@ function! s:registeredOnce(cmd, group)
 endfunction
 
 
-silent! nnoremap <unique> <Plug>(seek-seek)
-      \ :<C-U>call <SID>seek(0)<CR>
-silent! onoremap <unique> <Plug>(seek-seek)
-      \ :<C-U>call <SID>seek(1)<CR>
-silent! onoremap <unique> <Plug>(seek-seek-cut)
-      \ :<C-U>call <SID>seek(0)<CR>
+command! Seek :call
+      \ :call <SID>seek(0)<CR>
+command! Seek :call
+      \ :call <SID>seek(1)<CR>
+command! SeekCut :call
+      \ :call <SID>seek(0)<CR>
 
-silent! nnoremap <unique> <Plug>(seek-back)
+command! SeekBack :call
       \ :<C-U>call <SID>seekBack(0)<CR>
-silent! onoremap <unique> <Plug>(seek-back)
+command! SeekBack :call
       \ :<C-U>call <SID>seekBack(0)<CR>
-silent! onoremap <unique> <Plug>(seek-back-cut)
+command! SeekBackCut :call
       \ :<C-U>call <SID>seekBack(1)<CR>
 
 
-silent! onoremap <unique> <Plug>(seek-jump-presential-iw)
+command! SeekJumpPresentialIw :call
       \ :<C-U>call <SID>seekJumpPresential('iw')<CR>
-silent! onoremap <unique> <Plug>(seek-jump-presential-aw)
+command! SeekJumpPresentialAw:call
       \ :<C-U>call <SID>seekJumpPresential('aw')<CR>
-silent! onoremap <unique> <Plug>(seek-jump-remote-iw)
+command! SeekJumpRemoteIw :call
       \ :<C-U>call <SID>seekJumpRemote('iw')<CR>
-silent! onoremap <unique> <Plug>(seek-jump-remote-aw)
+command! SeekJumpRemoteAw :call
       \ :<C-U>call <SID>seekJumpRemote('aw')<CR>
 
-silent! onoremap <unique> <Plug>(seek-back-jump-presential-iw)
+command! SeekBackJumpPresentialIw :call
       \ :<C-U>call <SID>seekBackJumpPresential('iw')<CR>
-silent! onoremap <unique> <Plug>(seek-back-jump-remote-iw)
+command! SeekBackJumpRemoteIw :call
       \ :<C-U>call <SID>seekBackJumpRemote('iw')<CR>
-silent! onoremap <unique> <Plug>(seek-back-jump-presential-aw)
+command! SeekBackJumpPresentialAw :call
       \ :<C-U>call <SID>seekBackJumpPresential('aw')<CR>
-silent! onoremap <unique> <Plug>(seek-back-jump-remote-aw)
+command! SeekBackJumpRemoteAw :call
       \ :<C-U>call <SID>seekBackJumpRemote('aw')<CR>
+
+command! Seek :call <SID>seek(1)<CR>
 
 "let seekKeys = get(g:, 'SeekKeys', '')
 "if len(seekKeys) > 0
@@ -176,26 +178,26 @@ let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
 let seekBackJumpRA = get(g:, 'seekBackJumpPresentialInnerKey', 'U')
 "endif
 
-execute "nmap <silent> ".seekSeek." <Plug>(seek-seek)"
-execute "omap <silent> ".seekSeek." <Plug>(seek-seek)"
-execute "omap <silent> ".seekCut." <Plug>(seek-seek-cut)"
+execute "nmap <silent> ".seekSeek." :Seek"
+execute "omap <silent> ".seekSeek." :Seek"
+execute "omap <silent> ".seekCut." :SeekCut"
 
-execute "nmap <silent> ".seekBack." <Plug>(seek-back)"
-execute "omap <silent> ".seekBack." <Plug>(seek-back)"
-execute "omap <silent> ".seekBackCut." <Plug>(seek-back-cut)"
+execute "nmap <silent> ".seekBack." :SeekBack"
+execute "omap <silent> ".seekBack." :SeekBack"
+execute "omap <silent> ".seekBackCut." :SeekBackCut"
 
 if get(g:, 'seek_enable_jumps', 0)
-  execute "omap <silent> ".seekJumpPI." <Plug>(seek-jump-presential-iw)"
-  execute "omap <silent> ".seekJumpRI." <Plug>(seek-jump-remote-iw)"
+  execute "omap <silent> ".seekJumpPI." :SeekJumpPresentialIw"
+  execute "omap <silent> ".seekJumpRI." :SeekJumpRemoteIw"
 
-  execute "omap <silent> ".seekJumpPA." <Plug>(seek-jump-presential-aw)"
-  execute "omap <silent> ".seekJumpRA." <Plug>(seek-jump-remote-aw)"
+  execute "omap <silent> ".seekJumpPA." :SeekJumpPresentialAw"
+  execute "omap <silent> ".seekJumpRA." :SeekJumpRemoteAw"
 
-  execute "omap <silent> ".seekBackJumpPI." <Plug>(seek-back-jump-presential-iw)"
-  execute "omap <silent> ".seekBackJumpRI." <Plug>(seek-back-jump-remote-iw)"
+  execute "omap <silent> ".seekBackJumpPI." :SeekBackJumpPresentialIw"
+  execute "omap <silent> ".seekBackJumpRI." :SeekBackJumpRemoteIw"
 
-  execute "omap <silent> ".seekBackJumpPA." <Plug>(seek-back-jump-presential-aw)"
-  execute "omap <silent> ".seekBackJumpRA." <Plug>(seek-back-jump-remote-aw)"
+  execute "omap <silent> ".seekBackJumpPA." :SeekBackJumpPresentialAw"
+  execute "omap <silent> ".seekBackJumpRA." :SeekBackJumpRemoteAw"
 endif
 
 "  <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
