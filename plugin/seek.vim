@@ -178,26 +178,26 @@ let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
 let seekBackJumpRA = get(g:, 'seekBackJumpPresentialInnerKey', 'U')
 "endif
 
-execute "nmap <silent> ".seekSeek." :Seek"
-execute "omap <silent> ".seekSeek." :Seek"
-execute "omap <silent> ".seekCut." :SeekCut"
+execute "nmap <silent> ".seekSeek." :Seek<cr>"
+execute "omap <silent> ".seekSeek." :Seek<cr>"
+execute "omap <silent> ".seekCut." :SeekCut<cr>"
 
-execute "nmap <silent> ".seekBack." :SeekBack"
-execute "omap <silent> ".seekBack." :SeekBack"
-execute "omap <silent> ".seekBackCut." :SeekBackCut"
+execute "nmap <silent> ".seekBack." :SeekBack<cr>"
+execute "omap <silent> ".seekBack." :SeekBack<cr>"
+execute "omap <silent> ".seekBackCut." :SeekBackCut<cr>"
 
 if get(g:, 'seek_enable_jumps', 0)
-  execute "omap <silent> ".seekJumpPI." :SeekJumpPresentialIw"
-  execute "omap <silent> ".seekJumpRI." :SeekJumpRemoteIw"
+  execute "omap <silent> ".seekJumpPI." :SeekJumpPresentialIw<cr>"
+  execute "omap <silent> ".seekJumpRI." :SeekJumpRemoteIw<cr>"
 
-  execute "omap <silent> ".seekJumpPA." :SeekJumpPresentialAw"
-  execute "omap <silent> ".seekJumpRA." :SeekJumpRemoteAw"
+  execute "omap <silent> ".seekJumpPA." :SeekJumpPresentialAw<cr>"
+  execute "omap <silent> ".seekJumpRA." :SeekJumpRemoteAw<cr>"
 
-  execute "omap <silent> ".seekBackJumpPI." :SeekBackJumpPresentialIw"
-  execute "omap <silent> ".seekBackJumpRI." :SeekBackJumpRemoteIw"
+  execute "omap <silent> ".seekBackJumpPI." :SeekBackJumpPresentialIw<cr>"
+  execute "omap <silent> ".seekBackJumpRI." :SeekBackJumpRemoteIw<cr>"
 
-  execute "omap <silent> ".seekBackJumpPA." :SeekBackJumpPresentialAw"
-  execute "omap <silent> ".seekBackJumpRA." :SeekBackJumpRemoteAw"
+  execute "omap <silent> ".seekBackJumpPA." :SeekBackJumpPresentialAw<cr>"
+  execute "omap <silent> ".seekBackJumpRA." :SeekBackJumpRemoteAw<cr>"
 endif
 
 "  <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
