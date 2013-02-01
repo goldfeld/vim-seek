@@ -12,23 +12,73 @@ Vim maps the key `s` to substitute. That it is the perfect mnemonic to seek is a
 
 The single character substitution can be accomplished with either `1s` or `cl`. And `S`, which is remapped to seek backwards, is completely substituted by `cc`.
 
+However, if you don't want to give up substitute, you can scroll down to the Customization section.
+
 ## I already use EasyMotion..
 
 Seek solves a different problem, and both are powerful tools. I use EasyMotion myself and love it--it's great for navigating across lines and around the file. But within the line, seek has more speed, for a very important reason: with seek you already know the keys you need to type before you even type `s`. Using EasyMotion there's a split second delay for it to generate the targets and another for your brain to process them. With seek you just type three quick keystrokes; you already know what to type.
 
 # Advanced
 
-Additional motions are provided as operator-pending-only. That is, they only work when used after `d`, `c` or `y`, and not by themselves.
+Additional motions are provided as operator-pending only. That is, they only work when used after `d`, `c` or `y`, and not by themselves.
 
 The motion `x` is to seek what `t` is to `f`. Standing for 'cut short \[of the target\]', it acts up to the first character typed, but doesn't include it. This is in contrast to `s` itself, which does include the first character typed--to keep it consistent with `f` behavior--but not the second character.
 
-Lastly but quite useful, `o` jumps out to the next word containing the characters typed, acting on the whole word. It's the equivalent of `aw`, but sniping the target from a distance. Typing `code` takes you to the next word containing "de", deleting it and leaving you in insert mode.
+## Jumping motions
 
-As expected, `x` and `o` are complemented by the reversed `X` and `O`.
+My personal favorites, `r` (remote jump) and `p` (presential jump) act on the next word containing the characters typed. They're the equivalent of `iw`, but `r` snipes the target word from a distance, and `p` jumps to the target and stays there. So you can use `yrth' to yank the next word containing "th" without leaving your position (in reality vim goes there and jumps back), and that's useful for pasting it to where you are. Or you can type `code' to jump to the next word with "de", deleting it and leaving you in insert mode.
+
+Whereas `r` and `p` use the inner word text object, the respective `u` and `o` are the equivalent outer word `aw`.
+
+To enable the jumping mappings you need to add the following to your vimrc: `let g:seek_enable_jumps = 1`. They don't work in diff mode by default, because the mode uses `dp` and `do` for other purposes, but you can override this by also adding `let g:seek_enable_jumps_in_diff = 1` to your vimrc.
+
+
+As expected, all these advanced mappings are complemented by their capital letter versions, which operate backwards.
+
+## Customization
+
+You can customize any of the keys that seek binds by adding lines such as the following to your vimrc.
+
+Change s and S:
+
+`let g:SeekKey = '<Space>'`
+`let g:SeekBackKey = '<S-Space>'` // note: <S-Space> doesn't work in terminal vim.
+
+Change x and X:
+
+`let g:SeekCutShortKey = '-'`
+`let g:SeekBackCutShortKey = '+'`
+
+Change p and P:
+
+`let g:seekJumpPresentialInnerKey = '<Leader>p'`
+`let g:seekBackJumpPresentialInnerKey = '<Leader>P'`
+
+Change r and R:
+
+`let g:seekJumpRemoteInnerKey = '<Leader>r'`
+`let g:seekBackJumpRemoteInnerKey = '<Leader>R'`
+
+Change o and O:
+
+`let g:seekJumpPresentialAroundKey = '<Leader>o'`
+`let g:seekBackJumpPresentialAroundKey = '<Leader>O'`
+
+Change u and U
+
+`let g:seekJumpRemoteAroundKey = '<Leader>u'`
+`let g:seekBackJumpPresentialInnerKey = '<Leader>U'`
+
+Or you can use a shorthand version to redefine all seek keys:
+
+`let g:SeekKeys = '<Space> <S-Space> - + <Leader>p <Leader>P' <Leader>r <Leader>R <Leader>o <Leader>O <Leader>u <Leader>U`
+
+Though it must always follow the order, you can simply use the defaults for keys you don't want to change, and you can truncate the string to leave the remaining unchanged:
+
+`let g:SeekKeys = 's S - +'` // will not change jump keys.
 
 # Planned next
 
-* Customization to define other keys for the mappings.
 * Repeating the last seek with `;` and `,` (same keys used for `f` and `t`).
 * (Optional) Respect user's `ignorecase` and `smartcase` settings, so that you can seek to a capital letter by typing the lowercase character.
-* (Under consideration) Making `yj{ab}` a completely remote operation, allowing you to yank a word from a distance without going there, which should be useful if you mean to paste it to your current position. `dj{ab}` could also get such a treatment.
+* Condensed jump mappings to allow you to use just one of `r` or `p` (or yet another key) for all jump motions, whereby you define which you want to be remote and which presential (e.g. `c` lends itself more to being presential, `y` to be remote, while `d` has good use of both).
