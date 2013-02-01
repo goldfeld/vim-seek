@@ -47,19 +47,23 @@ endfunction
 " TODO follow ignorecase and smartcase rules for alpha characters (and add to readme)
 " TODO remote yank option for the 'yc' motion
 function! s:seek(plus)
-  if v:count >= 1 && !g:seek_subst_disable
+  let c1 = getchar()
+  let c2 = getchar()
+  let line = getline('.')
+  let pos = getpos('.')[2]
+  let cnt = v:count ? v:count : 1
+  let seek = s:find_target_fwd(l:line, l:pos, l:cnt, l:c1, l:c2)
+  if l:seek != -1
+    execute 'normal! 0'.(l:seek + a:plus).'l'
+  endif
+endfunction
+
+function! s:seekOrSubst(plus)
+  if v:count >= 1
     execute 'normal! '.v:count.'x'
     startinsert
   else
-    let c1 = getchar()
-    let c2 = getchar()
-    let line = getline('.')
-    let pos = getpos('.')[2]
-    let cnt = v:count ? v:count : 1
-    let seek = s:find_target_fwd(l:line, l:pos, l:cnt, l:c1, l:c2)
-    if l:seek != -1
-      execute 'normal! 0'.(l:seek + a:plus).'l'
-    endif
+    call s:seek(a:plus)
   endif
 endfunction
 
@@ -153,8 +157,13 @@ function! s:registeredOnce(cmd, group)
 endfunction
 
 
-silent! nnoremap <unique> <Plug>(seek-seek)
-      \ :<C-U>call <SID>seek(0)<CR>
+if get(g:, 'seek_subst_disable', 0) != 0
+  silent! nnoremap <unique> <Plug>(seek-seek)
+        \ :<C-U>call <SID>seek(0)<CR>
+else
+  silent! nnoremap <unique> <Plug>(seek-seek)
+        \ :<C-U>call <SID>seekOrSubst(0)<CR>
+endif
 silent! onoremap <unique> <Plug>(seek-seek)
       \ :<C-U>call <SID>seek(1)<CR>
 silent! onoremap <unique> <Plug>(seek-seek-cut)
