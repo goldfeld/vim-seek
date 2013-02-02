@@ -60,8 +60,7 @@ endfunction
 
 function! s:seekOrSubst(plus)
   if v:count >= 1
-    execute 'normal! '.v:count.'x'
-    startinsert
+    execute 'normal! c'.v:count.'l'
   else
     call s:seek(a:plus)
   endif
