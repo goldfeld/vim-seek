@@ -17,7 +17,9 @@ let g:loaded_seek = 1
 " TODO remote yank option for the 'yc' motion
 function! s:seek(plus)
   if v:count >= 1
-    execute 'normal! c'.v:count.'l'
+   	execute 'normal c'.v:count.'l'
+		execute 'normal! l'
+		startinsert
   else
     let c1 = getchar()
     let c2 = getchar()
