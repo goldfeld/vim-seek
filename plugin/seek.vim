@@ -12,11 +12,6 @@ if exists('g:loaded_seek') || &cp
 endif
 let g:loaded_seek = 1
 
-" Set sensible default value for substitution disable configuration option
-if !exists('g:seek_subst_disable')
-  let g:seek_subst_disable = 0
-endif
-
 " find the `cnt`th occurence of "c1c2" after the current cursor position
 " `pos` in `line`
 function! s:find_target_fwd(line,pos,cnt,c1,c2)
@@ -60,7 +55,7 @@ endfunction
 
 function! s:seekOrSubst(plus)
   if v:count >= 1
-     execute 'normal c'.v:count.'l'
+    execute 'normal! c'.v:count.'l'
     execute 'normal! l'
     startinsert
   else
