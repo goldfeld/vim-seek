@@ -79,6 +79,7 @@ Though it must always follow the order, you can simply use the defaults for keys
 
 # Planned next
 
+* Create a doc file moving customization help out of this readme.
 * Repeating the last seek with `;` and `,` (same keys used for `f` and `t`).
 * (Optional) Respect user's `ignorecase` and `smartcase` settings, so that you can seek to a capital letter by typing the lowercase character.
 * Condensed jump mappings to allow you to use just one of `r` or `p` (or yet another key) for all jump motions, whereby you define which you want to be remote and which presential (e.g. `c` lends itself more to being presential, `y` to be remote, while `d` has good use of both).
