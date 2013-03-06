@@ -17,9 +17,9 @@ let g:loaded_seek = 1
 " TODO remote yank option for the 'yc' motion
 function! s:seek(plus)
   if v:count >= 1
-   	execute 'normal c'.v:count.'l'
-		execute 'normal! l'
-		startinsert
+     execute 'normal c'.v:count.'l'
+    execute 'normal! l'
+    startinsert
   else
     let c1 = getchar()
     let c2 = getchar()
@@ -156,7 +156,7 @@ silent! onoremap <unique> <Plug>(seek-back-jump-remote-aw)
 
 "let seekKeys = get(g:, 'SeekKeys', '')
 "if len(seekKeys) > 0
-"	for key in split(seekKeys, ' ')
+"  for key in split(seekKeys, ' ')
 "else
 let seekSeek = get(g:, 'SeekKey', 's')
 let seekCut = get(g:, 'SeekCutShortKey', 'x')
