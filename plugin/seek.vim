@@ -60,9 +60,9 @@ endfunction
 
 function! s:seekOrSubst(plus)
   if v:count >= 1
-   	execute 'normal c'.v:count.'l'
-		execute 'normal! l'
-		startinsert
+     execute 'normal c'.v:count.'l'
+    execute 'normal! l'
+    startinsert
   else
     call s:seek(a:plus)
   endif
@@ -198,7 +198,7 @@ silent! onoremap <unique> <Plug>(seek-back-jump-remote-aw)
 
 "let seekKeys = get(g:, 'SeekKeys', '')
 "if len(seekKeys) > 0
-"	for key in split(seekKeys, ' ')
+"  for key in split(seekKeys, ' ')
 "else
 let seekSeek = get(g:, 'SeekKey', 's')
 let seekCut = get(g:, 'SeekCutShortKey', 'x')
