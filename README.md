@@ -26,7 +26,7 @@ The motion `x` is to seek what `t` is to `f`. Standing for 'cut short \[of the t
 
 ## Jumping motions
 
-My personal favorites, `r` (remote jump) and `p` (presential jump) act on the next word containing the characters typed. They're the equivalent of `iw`, but `r` snipes the target word from a distance, and `p` jumps to the target and stays there. So you can use `yrth' to yank the next word containing "th" without leaving your position (in reality vim goes there and jumps back), and that's useful for pasting it to where you are. Or you can type `code' to jump to the next word with "de", deleting it and leaving you in insert mode.
+My personal favorites, `r` (remote jump) and `p` (presential jump) act on the next word containing the characters typed. They're the equivalent of `iw`, but `r` snipes the target word from a distance, and `p` jumps to the target and stays there. So you can use `yrth` to yank the next word containing "th" without leaving your position (in reality vim goes there and jumps back), and that's useful for pasting it to where you are. Or you can type `code` to jump to the next word with "de", deleting around it (aw) and leaving you in insert mode.
 
 Whereas `r` and `p` use the inner word text object, the respective `u` and `o` are the equivalent outer word `aw`.
 
