@@ -46,7 +46,7 @@ function! s:seek(plus)
   let c2 = getchar()
   let line = getline('.')
   let pos = getpos('.')[2]
-  let cnt = v:count ? v:count : 1
+  let cnt = v:count1
   let seek = s:find_target_fwd(l:line, l:pos, l:cnt, l:c1, l:c2)
   if l:seek != -1
     execute 'normal! 0'.(l:seek + a:plus).'l'
@@ -68,7 +68,7 @@ function! s:seekBack(plus)
   let c2 = getchar()
   let line = getline('.')
   let pos = getpos('.')[2]
-  let cnt = v:count ? v:count : 1
+  let cnt = v:count1
   let seek = s:find_target_bwd(l:line, l:pos, l:cnt, l:c1, l:c2)
   if l:seek != -1
     execute 'normal! 0'.(l:seek + a:plus).'l'
@@ -81,7 +81,7 @@ function! s:seekJumpPresential(textobj)
   let c2 = getchar()
   let line = getline('.')
   let pos = getpos('.')[2]
-  let seek = s:find_target_fwd(l:line, l:pos, v:count ? v:count : 1, l:c1, l:c2)
+  let seek = s:find_target_fwd(l:line, l:pos, v:count1, l:c1, l:c2)
   if l:seek != -1
     execute 'normal! 0'.(l:pos + l:seek).'lv'.a:textobj
   endif
@@ -93,7 +93,7 @@ function! s:seekBackJumpPresential(textobj)
   let c2 = getchar()
   let line = getline('.')
   let pos = getpos('.')[2]
-  let seek = s:find_target_bwd(l:line, l:pos, v:count ? v:count : 1, l:c1, l:c2)
+  let seek = s:find_target_bwd(l:line, l:pos, v:count1, l:c1, l:c2)
   if l:seek != -1
     execute 'normal! 0'.l:seek.'lv'.a:textobj
   endif
@@ -106,7 +106,7 @@ function! s:seekJumpRemote(textobj)
   let line = getline('.')
   let cursor = getpos('.')
   let pos = l:cursor[2]
-  let seek = find_target_fwd(l:line, l:pos, v:count ? v:count : 1, l:c1, l:c2)
+  let seek = find_target_fwd(l:line, l:pos, v:count1, l:c1, l:c2)
 
   let cmd = "execute 'call cursor(".l:cursor[1].", ".l:pos.")'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
@@ -123,7 +123,7 @@ function! s:seekBackJumpRemote(textobj)
   let line = getline('.')
   let cursor = getpos('.')
   let pos = l:cursor[2]
-  let seek = find_target_fwd(l:line, l:pos, v:count ? v:count : 1, l:c1, l:c2)
+  let seek = find_target_fwd(l:line, l:pos, v:count1, l:c1, l:c2)
 
   let cmd = "execute 'call cursor(".l:cursor[1].", ".l:pos.")'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
