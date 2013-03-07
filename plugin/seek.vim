@@ -19,6 +19,8 @@ let g:loaded_seek = 1
 " `pos` in `line`
 function! s:find_target_fwd(pos, cnt)
   let c1 = getchar()
+  " abort seek if first char is <Esc>
+  if l:c1 == 27 | return -1 | endif
   let c2 = getchar()
   let line = getline('.')
   let pos = a:pos
@@ -36,6 +38,8 @@ endfunction
 " `pos` in `line`
 function! s:find_target_bwd(pos, cnt)
   let c1 = getchar()
+  " abort seek if first char is <Esc>
+  if l:c1 == 27 | return -1 | endif
   let c2 = getchar()
   let line = getline('.')
   let pos = a:pos
