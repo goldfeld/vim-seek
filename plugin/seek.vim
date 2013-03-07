@@ -12,42 +12,46 @@ if exists('g:loaded_seek') || &cp
 endif
 let g:loaded_seek = 1
 
+" TODO https://github.com/vim-scripts/InsertChar/blob/master/plugin/InsertChar.vim
+" TODO follow ignorecase and smartcase rules for alpha characters (and add to readme)
+
 " find the `cnt`th occurence of "c1c2" after the current cursor position
 " `pos` in `line`
-function! s:find_target_fwd(line,pos,cnt,c1,c2)
+function! s:find_target_fwd(pos, cnt)
+  let c1 = getchar()
+  let c2 = getchar()
+  let line = getline('.')
   let pos = a:pos
   let cnt = a:cnt
   while cnt > 0
-    let seek = stridx(a:line[l:pos :], nr2char(a:c1).nr2char(a:c2))
-    let pos = l:pos + l:seek + 2 " to not repeatedly find the same occurence
-    let cnt = l:cnt - 1
+    let seek = stridx(l:line, nr2char(l:c1).nr2char(l:c2), l:pos)
+    let l:pos = l:seek + 2 " to not repeatedly find the same occurence
+    let l:cnt = l:cnt - 1
   endwhile
-  return l:seek == -1 ? -1 : l:pos - 2 " return pos to beginning of matching char-pair
+  " return pos to beginning of matching char-pair
+  return l:seek == -1 ? -1 : l:pos - 2
 endfunction
 
 " find the `cnt`th occurence of "c1c2" before the current cursor position
 " `pos` in `line`
-function! s:find_target_bwd(line,pos,cnt,c1,c2)
-  let pos = a:pos
-  let cnt = a:cnt
-  while cnt > 0
-    let seek = strridx(a:line[: l:pos - 1], nr2char(a:c1).nr2char(a:c2))
-    let pos = l:seek - 2 " to not repeatedly find the same occurence
-    let cnt = l:cnt - 1
-  endwhile
-  return l:seek == -1 ? -1 : l:pos + 2 " return pos to beginning of matching char-pair
-endfunction
-
-" TODO https://github.com/vim-scripts/InsertChar/blob/master/plugin/InsertChar.vim
-" TODO follow ignorecase and smartcase rules for alpha characters (and add to readme)
-" TODO remote yank option for the 'yc' motion
-function! s:seek(plus)
+function! s:find_target_bwd(pos, cnt)
   let c1 = getchar()
   let c2 = getchar()
   let line = getline('.')
+  let pos = a:pos
+  let cnt = a:cnt
+  while cnt > 0
+    let seek = strridx(l:line[: l:pos - 1], nr2char(l:c1).nr2char(l:c2))
+    let l:pos = l:seek - 2 " to not repeatedly find the same occurence
+    let l:cnt = l:cnt - 1
+  endwhile
+  " return pos to beginning of matching char-pair
+  return l:seek == -1 ? -1 : l:pos + 2
+endfunction
+
+function! s:seek(plus)
   let pos = getpos('.')[2]
-  let cnt = v:count1
-  let seek = s:find_target_fwd(l:line, l:pos, l:cnt, l:c1, l:c2)
+  let seek = s:find_target_fwd(l:pos, v:count1)
   if l:seek != -1
     execute 'normal! 0'.(l:seek + a:plus).'l'
   endif
@@ -64,12 +68,8 @@ function! s:seekOrSubst(plus)
 endfunction
 
 function! s:seekBack(plus)
-  let c1 = getchar()
-  let c2 = getchar()
-  let line = getline('.')
   let pos = getpos('.')[2]
-  let cnt = v:count1
-  let seek = s:find_target_bwd(l:line, l:pos, l:cnt, l:c1, l:c2)
+  let seek = s:find_target_bwd(l:pos, v:count1)
   if l:seek != -1
     execute 'normal! 0'.(l:seek + a:plus).'l'
   endif
@@ -77,59 +77,47 @@ endfunction
 
 function! s:seekJumpPresential(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
-  let c1 = getchar()
-  let c2 = getchar()
-  let line = getline('.')
   let pos = getpos('.')[2]
-  let seek = s:find_target_fwd(l:line, l:pos, v:count1, l:c1, l:c2)
+  let seek = s:find_target_fwd(l:pos, v:count1)
   if l:seek != -1
-    execute 'normal! 0'.(l:pos + l:seek).'lv'.a:textobj
+    execute 'normal! 0'. l:seek .'lv'.a:textobj
   endif
 endfunction
 
 function! s:seekBackJumpPresential(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
-  let c1 = getchar()
-  let c2 = getchar()
-  let line = getline('.')
   let pos = getpos('.')[2]
-  let seek = s:find_target_bwd(l:line, l:pos, v:count1, l:c1, l:c2)
+  let seek = s:find_target_bwd(l:pos, v:count1)
   if l:seek != -1
-    execute 'normal! 0'.l:seek.'lv'.a:textobj
+    execute 'normal! 0' . l:seek . 'lv'.a:textobj
   endif
 endfunction
 
 function! s:seekJumpRemote(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
-  let c1 = getchar()
-  let c2 = getchar()
-  let line = getline('.')
   let cursor = getpos('.')
   let pos = l:cursor[2]
-  let seek = find_target_fwd(l:line, l:pos, v:count1, l:c1, l:c2)
+  let seek = s:find_target_fwd(l:pos, v:count1)
 
   let cmd = "execute 'call cursor(".l:cursor[1].", ".l:pos.")'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
   
   if l:seek != -1
-    execute 'normal! 0'.(l:pos + l:seek).'lv'.a:textobj
+    execute 'normal! 0'. l:seek .'lv'.a:textobj
   endif
 endfunction
 
 function! s:seekBackJumpRemote(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
-  let c1 = getchar()
-  let c2 = getchar()
-  let line = getline('.')
   let cursor = getpos('.')
   let pos = l:cursor[2]
-  let seek = find_target_fwd(l:line, l:pos, v:count1, l:c1, l:c2)
+  let seek = s:find_target_bwd(l:pos, v:count1)
 
   let cmd = "execute 'call cursor(".l:cursor[1].", ".l:pos.")'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
 
   if l:seek != -1
-    execute 'normal! 0'.l:seek.'lv'.a:textobj
+    execute 'normal! 0' . l:seek . 'lv'.a:textobj
   endif
 endfunction
 
