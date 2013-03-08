@@ -122,7 +122,7 @@ function! s:seek(plus)
   let pos = getpos('.')[2]
   let seek = s:find_target_fwd(l:pos, v:count1)
   if l:seek != -1
-    execute 'normal! 0'.(l:seek + a:plus).'l'
+    call cursor(line('.'), 1 + l:seek + a:plus)
   endif
 endfunction
 
@@ -140,7 +140,7 @@ function! s:seekBack(plus)
   let pos = getpos('.')[2]
   let seek = s:find_target_bwd(l:pos, v:count1)
   if l:seek != -1
-    execute 'normal! 0'.(l:seek + a:plus).'l'
+    call cursor(line('.'), 1 + l:seek + a:plus)
   endif
 endfunction
 
@@ -149,7 +149,8 @@ function! s:seekJumpPresential(textobj)
   let pos = getpos('.')[2]
   let seek = s:find_target_fwd(l:pos, v:count1)
   if l:seek != -1
-    execute 'normal! 0'. l:seek .'lv'.a:textobj
+    call cursor(line('.'), 1 + l:seek)
+    execute 'normal! v'.a:textobj
   endif
 endfunction
 
@@ -158,7 +159,8 @@ function! s:seekBackJumpPresential(textobj)
   let pos = getpos('.')[2]
   let seek = s:find_target_bwd(l:pos, v:count1)
   if l:seek != -1
-    execute 'normal! 0' . l:seek . 'lv'.a:textobj
+    call cursor(line('.'), 1 + l:seek)
+    execute 'normal! v'.a:textobj
   endif
 endfunction
 
@@ -172,7 +174,8 @@ function! s:seekJumpRemote(textobj)
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
   
   if l:seek != -1
-    execute 'normal! 0'. l:seek .'lv'.a:textobj
+    call cursor(line('.'), 1 + l:seek)
+    execute 'normal! v'.a:textobj
   endif
 endfunction
 
@@ -186,7 +189,8 @@ function! s:seekBackJumpRemote(textobj)
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
 
   if l:seek != -1
-    execute 'normal! 0' . l:seek . 'lv'.a:textobj
+    call cursor(line('.'), 1 + l:seek)
+    execute 'normal! v'.a:textobj
   endif
 endfunction
 
