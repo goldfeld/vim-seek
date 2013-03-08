@@ -26,7 +26,7 @@ function! s:find_target_fwd(pos, cnt)
   let pos = a:pos
   let cnt = a:cnt
   while cnt > 0
-    let seek = stridx(l:line, nr2char(l:c1).nr2char(l:c2), l:pos)
+    let seek = s:seekStridx(l:line, l:c1, l:c2, l:pos)
     let l:pos = l:seek + 2 " to not repeatedly find the same occurence
     let l:cnt = l:cnt - 1
   endwhile
@@ -45,13 +45,78 @@ function! s:find_target_bwd(pos, cnt)
   let pos = a:pos
   let cnt = a:cnt
   while cnt > 0
-    let seek = strridx(l:line[: l:pos - 1], nr2char(l:c1).nr2char(l:c2))
+    let seek = s:seekStrridx(l:line[: l:pos - 1], l:c1, l:c2)
     let l:pos = l:seek - 2 " to not repeatedly find the same occurence
     let l:cnt = l:cnt - 1
   endwhile
   " return pos to beginning of matching char-pair
   return l:seek == -1 ? -1 : l:pos + 2
 endfunction
+
+" we use the souped up str(r)idx functions if the user hasn't explicited told
+" us not to ignore case, plus he has one of: native vim ignorecase settings,
+" explicitly told us to ignore case, or defined any custom char ignores.
+if !get(g:, 'seek_noignorecase', 0) && (&ignorecase || &smartcase
+  \ || get(g:, 'seek_ignorecase', 0) || len(get(g:, 'seek_custom_chars', {})))
+
+  function! s:seekStridx(line, c1, c2, start)
+    let char1 = nr2char(a:c1)
+    let char2 = nr2char(a:c2)
+    let seek = stridx(a:line, l:char1 . l:char2, a:start)
+    if l:seek != -1 | return l:seek | endif
+
+    " A to Z
+    let ts = []
+    if a:c1 >= 97 && a:c1 <= 122
+      let ch1 = nr2char(a:c1 - 32)
+      call add(l:ts, l:ch1 . l:char2)
+      if a:c2 >= 97 && a:c2 <= 122 | call add(l:ts, l:ch1 . nr2char(a:c2 - 32))
+      endif
+    elseif a:c2 >= 97 && a:c2 <= 122
+      call add(l:ts, l:char1 . nr2char(a:c2 - 32))
+    endif
+    for attempt in l:ts
+      let l:seek = stridx(a:line, attempt, a:start)
+      if l:seek != -1 | return l:seek | endif
+    endfor
+
+    echo 'implement custom key shift-state ignores'
+    return l:seek
+  endfunction
+
+  function! s:seekStrridx(line, c1, c2)
+    let char1 = nr2char(a:c1)
+    let char2 = nr2char(a:c2)
+    let seek = strridx(a:line, l:char1 . l:char2)
+    if l:seek != -1 | return l:seek | endif
+
+    " A to Z
+    let ts = []
+    if a:c1 >= 97 && a:c1 <= 122
+      let ch1 = nr2char(a:c1 - 32)
+      call add(l:ts, l:ch1 . l:char2)
+      if a:c2 >= 97 && a:c2 <= 122 | call add(l:ts, l:ch1 . nr2char(a:c2 - 32))
+      endif
+    elseif a:c2 >= 97 && a:c2 <= 122
+      call add(l:ts, l:char1 . nr2char(a:c2 - 32))
+    endif
+    for attempt in l:ts
+      let l:seek = strridx(a:line, attempt)
+      if l:seek != -1 | return l:seek | endif
+    endfor
+
+    echo 'implement custom key shift-state ignores'
+    return l:seek
+  endfunction
+
+else
+  function! s:seekStridx(line, c1, c2, start)
+    return stridx(a:line, nr2char(a:c1).nr2char(a:c2), a:start)
+  endfunction
+  function! s:seekStrridx(line, c1, c2)
+    return strridx(a:line, nr2char(a:c1).nr2char(a:c2))
+  endfunction
+endif
 
 function! s:seek(plus)
   let pos = getpos('.')[2]
@@ -143,7 +208,6 @@ function! s:registeredOnce(cmd, group)
     exe a:cmd
   endif
 endfunction
-
 
 if get(g:, 'seek_subst_disable', 0) != 0
   silent! nnoremap <unique> <Plug>(seek-seek)
