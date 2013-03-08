@@ -62,23 +62,31 @@ if !get(g:, 'seek_noignorecase', 0) && (&ignorecase || &smartcase
   function! s:seekStridx(line, c1, c2, start)
     let char1 = nr2char(a:c1)
     let char2 = nr2char(a:c2)
-    let seek = stridx(a:line, l:char1 . l:char2, a:start)
-    if l:seek != -1 | return l:seek | endif
+    let seek = -1
 
     " A to Z
-    let ts = []
+    let [one, two, ch1, ch2] = [0, 0, '', '']
     if a:c1 >= 97 && a:c1 <= 122
-      let ch1 = nr2char(a:c1 - 32)
-      call add(l:ts, l:ch1 . l:char2)
-      if a:c2 >= 97 && a:c2 <= 122 | call add(l:ts, l:ch1 . nr2char(a:c2 - 32))
-      endif
-    elseif a:c2 >= 97 && a:c2 <= 122
-      call add(l:ts, l:char1 . nr2char(a:c2 - 32))
-    endif
-    for attempt in l:ts
-      let l:seek = stridx(a:line, attempt, a:start)
+      let l:ch1 = nr2char(a:c1 - 32)
+      let l:seek = stridx(a:line, l:ch1 . l:char2, a:start)
       if l:seek != -1 | return l:seek | endif
-    endfor
+      let l:one = 1
+    endif
+
+    if a:c2 >= 97 && a:c2 <= 122
+      let l:ch2 = nr2char(a:c2 - 32)
+      let l:seek = stridx(a:line, l:char1 . l:ch2, a:start)
+      if l:seek != -1 | return l:seek | endif
+      let l:two = 1
+    endif
+    
+    if l:one && l:two
+      let l:seek = stridx(a:line, l:ch1 . l:ch2, a:start)
+      if l:seek != -1 | return l:seek | endif
+    endif
+
+    let seek = stridx(a:line, l:char1 . l:char2, a:start)
+    if l:seek != -1 | return l:seek | endif
 
     echo 'implement custom key shift-state ignores'
     return l:seek
@@ -87,23 +95,31 @@ if !get(g:, 'seek_noignorecase', 0) && (&ignorecase || &smartcase
   function! s:seekStrridx(line, c1, c2)
     let char1 = nr2char(a:c1)
     let char2 = nr2char(a:c2)
-    let seek = strridx(a:line, l:char1 . l:char2)
-    if l:seek != -1 | return l:seek | endif
+    let seek = -1
 
     " A to Z
-    let ts = []
+    let [one, two, ch1, ch2] = [0, 0, '', '']
     if a:c1 >= 97 && a:c1 <= 122
-      let ch1 = nr2char(a:c1 - 32)
-      call add(l:ts, l:ch1 . l:char2)
-      if a:c2 >= 97 && a:c2 <= 122 | call add(l:ts, l:ch1 . nr2char(a:c2 - 32))
-      endif
-    elseif a:c2 >= 97 && a:c2 <= 122
-      call add(l:ts, l:char1 . nr2char(a:c2 - 32))
-    endif
-    for attempt in l:ts
-      let l:seek = strridx(a:line, attempt)
+      let l:ch1 = nr2char(a:c1 - 32)
+      let l:seek = strridx(a:line, l:ch1 . l:char2)
       if l:seek != -1 | return l:seek | endif
-    endfor
+      let l:one = 1
+    endif
+
+    if a:c2 >= 97 && a:c2 <= 122
+      let l:ch2 = nr2char(a:c2 - 32)
+      let l:seek = strridx(a:line, l:char1 . l:ch2)
+      if l:seek != -1 | return l:seek | endif
+      let l:two = 1
+    endif
+    
+    if l:one && l:two
+      let l:seek = strridx(a:line, l:ch1 . l:ch2)
+      if l:seek != -1 | return l:seek | endif
+    endif
+
+    let seek = strridx(a:line, l:char1 . l:char2)
+    if l:seek != -1 | return l:seek | endif
 
     echo 'implement custom key shift-state ignores'
     return l:seek
