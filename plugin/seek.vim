@@ -2,8 +2,8 @@
 " File:          plugin/seek.vim
 " Description:   Motion for seeking to a pair of characters in the current line.
 " Author:        Vic Goldfeld <github.com/goldfeld>
-" Version:       0.5
-" ReleaseDate:   2013-01-30
+" Version:       0.7
+" ReleaseDate:   2013-03-10
 " License:       Licensed under the same terms as Vim itself.
 " ==============================================================================
 
@@ -12,12 +12,29 @@ if exists('g:loaded_seek') || &cp
 endif
 let g:loaded_seek = 1
 
+let s:charAliases = {}
+" char aliases augment alphabet case insensitivity by allowing you to type
+" a key to mean another, when doing a seek.
+" e.g. user has `let g:seek_char_aliases = '[{ ]} 9( 0)'` on vimrc
+for pair in split(get(g:, 'seek_char_aliases', ''))
+  if len(pair) == 2
+    let s:charAliases[pair[0]] = pair[1]
+  endif
+endfor
+
 " TODO https://github.com/vim-scripts/InsertChar/blob/master/plugin/InsertChar.vim
 " TODO follow ignorecase and smartcase rules for alpha characters (and add to readme)
 
+function! s:compareSeekFwd(challenger, current)
+  return a:current == -1 || (a:challenger != -1 && a:challenger < a:current)
+endfunction
+function! s:compareSeekBwd(challenger, current)
+  return a:current == -1 || (a:challenger != -1 && a:challenger > a:current)
+endfunction
+
 " find the `cnt`th occurence of "c1c2" after the current cursor position
 " `pos` in `line`
-function! s:find_target_fwd(pos, cnt)
+function! s:findTargetFwd(pos, cnt)
   let c1 = getchar()
   " abort seek if first char is <Esc>
   if l:c1 == 27 | return -1 | endif
@@ -26,17 +43,18 @@ function! s:find_target_fwd(pos, cnt)
   let pos = a:pos
   let cnt = a:cnt
   while cnt > 0
-    let seek = s:seekStridx(l:line, l:c1, l:c2, l:pos)
-    let l:pos = l:seek + 2 " to not repeatedly find the same occurence
+    let seek = s:seekindex(l:line, l:c1, l:c2, l:pos,
+      \ 'stridx', 's:compareSeekFwd')
+    let l:pos = l:seek + 1 " to not repeatedly find the same occurence
     let l:cnt = l:cnt - 1
   endwhile
   " return pos to beginning of matching char-pair
-  return l:seek == -1 ? -1 : l:pos - 2
+  return l:seek == -1 ? -1 : l:pos - 1
 endfunction
 
 " find the `cnt`th occurence of "c1c2" before the current cursor position
 " `pos` in `line`
-function! s:find_target_bwd(pos, cnt)
+function! s:findTargetBwd(pos, cnt)
   let c1 = getchar()
   " abort seek if first char is <Esc>
   if l:c1 == 27 | return -1 | endif
@@ -45,98 +63,78 @@ function! s:find_target_bwd(pos, cnt)
   let pos = a:pos
   let cnt = a:cnt
   while cnt > 0
-    let seek = s:seekStrridx(l:line[: l:pos - 1], l:c1, l:c2)
-    let l:pos = l:seek - 2 " to not repeatedly find the same occurence
+    let haystack = l:line[: l:pos - 1]
+    let seek = s:seekindex(l:haystack, l:c1, l:c2, len(l:haystack),
+      \ 'strridx', 's:compareSeekBwd')
+    let l:pos = l:seek - 1 " to not repeatedly find the same occurence
     let l:cnt = l:cnt - 1
   endwhile
   " return pos to beginning of matching char-pair
-  return l:seek == -1 ? -1 : l:pos + 2
+  return l:seek == -1 ? -1 : l:pos + 1
 endfunction
 
 " we use the souped up str(r)idx functions if the user hasn't explicited told
 " us not to ignore case, plus he has one of: native vim ignorecase settings,
-" explicitly told us to ignore case, or defined any custom char ignores.
+" explicitly told us to ignore case, or defined any custom char aliases.
 if !get(g:, 'seek_noignorecase', 0) && (&ignorecase || &smartcase
-  \ || get(g:, 'seek_ignorecase', 0) || len(get(g:, 'seek_custom_chars', {})))
+  \ || get(g:, 'seek_ignorecase', 0) || len(get(g:, 'seek_char_aliases', {})))
 
-  function! s:seekStridx(line, c1, c2, start)
+  function! s:seekindex(line, c1, c2, start, seekfn, comparefn)
     let char1 = nr2char(a:c1)
     let char2 = nr2char(a:c2)
-    let seek = -1
+    let Index = function(a:seekfn)
+    let Compare = function(a:comparefn)
 
-    " A to Z
-    let [one, two, ch1, ch2] = [0, 0, '', '']
+    let seek = Index(a:line, l:char1 . l:char2, a:start)
+    let pureseek = l:seek
+    let [one, two] = ['', '']
+
+    " a to z
     if a:c1 >= 97 && a:c1 <= 122
-      let l:ch1 = nr2char(a:c1 - 32)
-      let l:seek = stridx(a:line, l:ch1 . l:char2, a:start)
-      if l:seek != -1 | return l:seek | endif
-      let l:one = 1
+      let l:one = nr2char(a:c1 - 32)
+      let seek2 = Index(a:line, l:one . l:char2, a:start)
+      if Compare(seek2, l:seek) | let l:seek = seek2 | endif
+    elseif l:pureseek != -1 && a:c1 >= 65 && a:c1 <= 90 | return l:pureseek
+    else
+      let symbol = get(s:charAliases, l:char1, '')
+      if l:symbol != ''
+        let l:one = l:symbol
+        let seek2 = Index(a:line, l:one . l:char2, a:start)
+        if Compare(seek2, l:seek) | let l:seek = seek2 | endif
+      endif
     endif
 
     if a:c2 >= 97 && a:c2 <= 122
-      let l:ch2 = nr2char(a:c2 - 32)
-      let l:seek = stridx(a:line, l:char1 . l:ch2, a:start)
-      if l:seek != -1 | return l:seek | endif
-      let l:two = 1
-    endif
-    
-    if l:one && l:two
-      let l:seek = stridx(a:line, l:ch1 . l:ch2, a:start)
-      if l:seek != -1 | return l:seek | endif
-    endif
-
-    let seek = stridx(a:line, l:char1 . l:char2, a:start)
-    if l:seek != -1 | return l:seek | endif
-
-    echo 'implement custom key shift-state ignores'
-    return l:seek
-  endfunction
-
-  function! s:seekStrridx(line, c1, c2)
-    let char1 = nr2char(a:c1)
-    let char2 = nr2char(a:c2)
-    let seek = -1
-
-    " A to Z
-    let [one, two, ch1, ch2] = [0, 0, '', '']
-    if a:c1 >= 97 && a:c1 <= 122
-      let l:ch1 = nr2char(a:c1 - 32)
-      let l:seek = strridx(a:line, l:ch1 . l:char2)
-      if l:seek != -1 | return l:seek | endif
-      let l:one = 1
+      let l:two = nr2char(a:c2 - 32)
+      let seek3 = Index(a:line, l:char1 . l:two, a:start)
+      if Compare(seek3, l:seek) | let l:seek = seek3 | endif
+    elseif l:pureseek != -1 && a:c2 >= 65 && a:c2 <= 90 | return l:pureseek
+    else
+      let symbol = get(s:charAliases, l:char2, '')
+      if l:symbol != ''
+        let l:two = l:symbol
+        let seek3 = Index(a:line, l:char1 . l:two, a:start)
+        if Compare(seek3, l:seek) | let l:seek = seek3 | endif
+      endif
     endif
 
-    if a:c2 >= 97 && a:c2 <= 122
-      let l:ch2 = nr2char(a:c2 - 32)
-      let l:seek = strridx(a:line, l:char1 . l:ch2)
-      if l:seek != -1 | return l:seek | endif
-      let l:two = 1
-    endif
-    
-    if l:one && l:two
-      let l:seek = strridx(a:line, l:ch1 . l:ch2)
-      if l:seek != -1 | return l:seek | endif
+    if l:one != '' && l:two != ''
+      let seek4 = Index(a:line, l:one . l:two, a:start)
+      if Compare(seek4, l:seek) | let l:seek = seek4 | endif
     endif
 
-    let seek = strridx(a:line, l:char1 . l:char2)
-    if l:seek != -1 | return l:seek | endif
-
-    echo 'implement custom key shift-state ignores'
     return l:seek
   endfunction
 
 else
-  function! s:seekStridx(line, c1, c2, start)
+  function! s:seekindex(line, c1, c2, start)
     return stridx(a:line, nr2char(a:c1).nr2char(a:c2), a:start)
-  endfunction
-  function! s:seekStrridx(line, c1, c2)
-    return strridx(a:line, nr2char(a:c1).nr2char(a:c2))
   endfunction
 endif
 
 function! s:seek(plus)
   let pos = getpos('.')[2]
-  let seek = s:find_target_fwd(l:pos, v:count1)
+  let seek = s:findTargetFwd(l:pos, v:count1)
   if l:seek != -1
     call cursor(line('.'), 1 + l:seek + a:plus)
   endif
@@ -154,7 +152,7 @@ endfunction
 
 function! s:seekBack(plus)
   let pos = getpos('.')[2]
-  let seek = s:find_target_bwd(l:pos, v:count1)
+  let seek = s:findTargetBwd(l:pos, v:count1)
   if l:seek != -1
     call cursor(line('.'), 1 + l:seek + a:plus)
   endif
@@ -163,7 +161,7 @@ endfunction
 function! s:seekJumpPresential(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let pos = getpos('.')[2]
-  let seek = s:find_target_fwd(l:pos, v:count1)
+  let seek = s:findTargetFwd(l:pos, v:count1)
   if l:seek != -1
     call cursor(line('.'), 1 + l:seek)
     execute 'normal! v'.a:textobj
@@ -173,7 +171,7 @@ endfunction
 function! s:seekBackJumpPresential(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let pos = getpos('.')[2]
-  let seek = s:find_target_bwd(l:pos, v:count1)
+  let seek = s:findTargetBwd(l:pos, v:count1)
   if l:seek != -1
     call cursor(line('.'), 1 + l:seek)
     execute 'normal! v'.a:textobj
@@ -184,7 +182,7 @@ function! s:seekJumpRemote(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let cursor = getpos('.')
   let pos = l:cursor[2]
-  let seek = s:find_target_fwd(l:pos, v:count1)
+  let seek = s:findTargetFwd(l:pos, v:count1)
 
   let cmd = "execute 'call cursor(".l:cursor[1].", ".l:pos.")'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
@@ -199,7 +197,7 @@ function! s:seekBackJumpRemote(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let cursor = getpos('.')
   let pos = l:cursor[2]
-  let seek = s:find_target_bwd(l:pos, v:count1)
+  let seek = s:findTargetBwd(l:pos, v:count1)
 
   let cmd = "execute 'call cursor(".l:cursor[1].", ".l:pos.")'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
