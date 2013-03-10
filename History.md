@@ -1,5 +1,4 @@
 ## Known issues
-* Remote back jump needs to account for the characters deleted when repositioning.
 * Shorthand customization of keys not implemented yet.
 
 ## NEXT

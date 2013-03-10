@@ -184,7 +184,7 @@ function! s:seekJumpRemote(textobj)
   let pos = l:cursor[2]
   let seek = s:findTargetFwd(l:pos, v:count1)
 
-  let cmd = "execute 'call cursor(".l:cursor[1].", ".l:pos.")'"
+  let cmd = "execute 'call cursor(" . l:cursor[1]. ", " . l:pos . ")'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
   
   if l:seek != -1
@@ -199,7 +199,12 @@ function! s:seekBackJumpRemote(textobj)
   let pos = l:cursor[2]
   let seek = s:findTargetBwd(l:pos, v:count1)
 
-  let cmd = "execute 'call cursor(".l:cursor[1].", ".l:pos.")'"
+  " the remote back jump needs special treatment in repositioning the cursor,
+  " to account for possible characters deleted; we do this by diffing the line
+  " length before and after i.e. originalPos - (beforeLen - afterLen)
+  let before = len(getline('.'))
+  let cmd = "execute 'call cursor(" . l:cursor[1] . ", "
+    \ . (l:pos - l:before) . " + len(getline(\".\")))'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
 
   if l:seek != -1
