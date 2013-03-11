@@ -186,7 +186,7 @@ function! s:seekJumpRemote(textobj)
 
   let cmd = "execute 'call cursor(" . l:cursor[1]. ", " . l:pos . ")'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
-  
+
   if l:seek != -1
     call cursor(line('.'), 1 + l:seek)
     execute 'normal! v'.a:textobj
@@ -239,6 +239,7 @@ else
   silent! nnoremap <unique> <Plug>(seek-seek)
         \ :<C-U>call <SID>seekOrSubst(0)<CR>
 endif
+
 silent! onoremap <unique> <Plug>(seek-seek)
       \ :<C-U>call <SID>seek(1)<CR>
 silent! onoremap <unique> <Plug>(seek-seek-cut)
@@ -250,7 +251,6 @@ silent! onoremap <unique> <Plug>(seek-back)
       \ :<C-U>call <SID>seekBack(0)<CR>
 silent! onoremap <unique> <Plug>(seek-back-cut)
       \ :<C-U>call <SID>seekBack(1)<CR>
-
 
 silent! onoremap <unique> <Plug>(seek-jump-presential-iw)
       \ :<C-U>call <SID>seekJumpPresential('iw')<CR>
