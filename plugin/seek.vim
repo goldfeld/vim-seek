@@ -293,26 +293,26 @@ let seekBackJumpPA = get(g:, 'seekBackJumpPresentialAroundKey', 'O')
 let seekBackJumpRA = get(g:, 'seekBackJumpPresentialInnerKey', 'U')
 "endif
 
-execute "nmap <silent> ".seekSeek." <Plug>(seek-seek)"
-execute "omap <silent> ".seekSeek." <Plug>(seek-seek)"
-execute "omap <silent> ".seekCut." <Plug>(seek-seek-cut)"
+execute "nmap <silent>" seekSeek "<Plug>(seek-seek)"
+execute "omap <silent>" seekSeek "<Plug>(seek-seek)"
+execute "omap <silent>" seekCut "<Plug>(seek-seek-cut)"
 
-execute "nmap <silent> ".seekBack." <Plug>(seek-back)"
-execute "omap <silent> ".seekBack." <Plug>(seek-back)"
-execute "omap <silent> ".seekBackCut." <Plug>(seek-back-cut)"
+execute "nmap <silent>" seekBack "<Plug>(seek-back)"
+execute "omap <silent>" seekBack "<Plug>(seek-back)"
+execute "omap <silent>" seekBackCut "<Plug>(seek-back-cut)"
 
 if get(g:, 'seek_enable_jumps', 0)
-  execute "omap <silent> ".seekJumpPI." <Plug>(seek-jump-presential-iw)"
-  execute "omap <silent> ".seekJumpRI." <Plug>(seek-jump-remote-iw)"
+  execute "omap <silent>" seekJumpPI "<Plug>(seek-jump-presential-iw)"
+  execute "omap <silent>" seekJumpRI "<Plug>(seek-jump-remote-iw)"
 
-  execute "omap <silent> ".seekJumpPA." <Plug>(seek-jump-presential-aw)"
-  execute "omap <silent> ".seekJumpRA." <Plug>(seek-jump-remote-aw)"
+  execute "omap <silent>" seekJumpPA "<Plug>(seek-jump-presential-aw)"
+  execute "omap <silent>" seekJumpRA "<Plug>(seek-jump-remote-aw)"
 
-  execute "omap <silent> ".seekBackJumpPI." <Plug>(seek-back-jump-presential-iw)"
-  execute "omap <silent> ".seekBackJumpRI." <Plug>(seek-back-jump-remote-iw)"
+  execute "omap <silent>" seekBackJumpPI "<Plug>(seek-back-jump-presential-iw)"
+  execute "omap <silent>" seekBackJumpRI "<Plug>(seek-back-jump-remote-iw)"
 
-  execute "omap <silent> ".seekBackJumpPA." <Plug>(seek-back-jump-presential-aw)"
-  execute "omap <silent> ".seekBackJumpRA." <Plug>(seek-back-jump-remote-aw)"
+  execute "omap <silent>" seekBackJumpPA "<Plug>(seek-back-jump-presential-aw)"
+  execute "omap <silent>" seekBackJumpRA "<Plug>(seek-back-jump-remote-aw)"
 endif
 
 "  <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
