@@ -141,12 +141,8 @@ function! s:seek(plus)
 endfunction
 
 function! s:seekOrSubst(plus)
-  if v:count >= 1
-    execute 'normal! c'.v:count.'l'
-    execute 'normal! l'
-    startinsert
-  else
-    call s:seek(a:plus)
+  if v:count >= 1 | call feedkeys('c' . v:count . 'l')
+  else | call s:seek(a:plus)
   endif
 endfunction
 
