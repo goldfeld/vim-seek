@@ -127,7 +127,7 @@ if !get(g:, 'seek_noignorecase', 0) && (&ignorecase || &smartcase
   endfunction
 
 else
-  function! s:seekindex(line, c1, c2, start)
+  function! s:seekindex(line, c1, c2, start, seekfn, comparefn)
     return stridx(a:line, nr2char(a:c1).nr2char(a:c2), a:start)
   endfunction
 endif
