@@ -29,7 +29,7 @@ function! s:compareSeekFwd(challenger, current)
   return a:current == -1 || (a:challenger != -1 && a:challenger < a:current)
 endfunction
 function! s:compareSeekBwd(challenger, current)
-  return a:current == -1 || (a:challenger != -1 && a:challenger > a:current)
+  return a:current == -1 || a:challenger > a:current
 endfunction
 
 " find the `cnt`th occurence of "c1c2" after the current cursor position
@@ -42,12 +42,14 @@ function! s:findTargetFwd(pos, cnt)
   let line = getline('.')
   let pos = a:pos
   let cnt = a:cnt
+
   while cnt > 0
     let seek = s:seekindex(l:line, l:c1, l:c2, l:pos,
       \ 'stridx', 's:compareSeekFwd')
-    let l:pos = l:seek + 1 " to not repeatedly find the same occurence
+    let l:pos = l:seek + 1 " so as to not repeatedly find the same occurence
     let l:cnt = l:cnt - 1
   endwhile
+
   " return pos to beginning of matching char-pair
   return l:seek == -1 ? -1 : l:pos - 1
 endfunction
@@ -62,13 +64,15 @@ function! s:findTargetBwd(pos, cnt)
   let line = getline('.')
   let pos = a:pos
   let cnt = a:cnt
+
   while cnt > 0
     let haystack = l:line[: l:pos - 1]
     let seek = s:seekindex(l:haystack, l:c1, l:c2, len(l:haystack),
       \ 'strridx', 's:compareSeekBwd')
-    let l:pos = l:seek - 1 " to not repeatedly find the same occurence
+    let l:pos = l:seek - 1 " so as to not repeatedly find the same occurence
     let l:cnt = l:cnt - 1
   endwhile
+
   " return pos to beginning of matching char-pair
   return l:seek == -1 ? -1 : l:pos + 1
 endfunction
@@ -310,8 +314,3 @@ if get(g:, 'seek_enable_jumps', 0)
   execute "omap <silent>" seekBackJumpPA "<Plug>(seek-back-jump-presential-aw)"
   execute "omap <silent>" seekBackJumpRA "<Plug>(seek-back-jump-remote-aw)"
 endif
-
-"  <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
-"
-"[link to other plugins](http://blabla.com)
-"![animated demonstration](http://blablable.com)
