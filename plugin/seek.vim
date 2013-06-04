@@ -130,7 +130,8 @@ if !get(g:, 'seek_noignorecase', 0) && (&ignorecase || &smartcase
 
 else
   function! s:seekindex(text, c1, c2, start, seekfn, comparefn)
-    return stridx(a:text, nr2char(a:c1).nr2char(a:c2), a:start)
+    let Index = function(a:seekfn)
+    return Index(a:text, nr2char(a:c1).nr2char(a:c2), a:start)
   endfunction
 endif
 
