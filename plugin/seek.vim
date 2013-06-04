@@ -33,18 +33,17 @@ function! s:compareSeekBwd(challenger, current)
 endfunction
 
 " find the `cnt`th occurence of "c1c2" after the current cursor position
-" `pos` in `line`
-function! s:findTargetFwd(pos, cnt)
+" `pos` in `text
+function! s:findTargetFwd(pos, cnt, text)
   let c1 = getchar()
   " abort seek if first char is <Esc>
   if l:c1 == 27 | return -1 | endif
   let c2 = getchar()
-  let line = getline('.')
   let pos = a:pos
   let cnt = a:cnt
 
   while cnt > 0
-    let seek = s:seekindex(l:line, l:c1, l:c2, l:pos,
+    let seek = s:seekindex(a:text, l:c1, l:c2, l:pos,
       \ 'stridx', 's:compareSeekFwd')
     let l:pos = l:seek + 1 " so as to not repeatedly find the same occurence
     let l:cnt = l:cnt - 1
@@ -55,18 +54,17 @@ function! s:findTargetFwd(pos, cnt)
 endfunction
 
 " find the `cnt`th occurence of "c1c2" before the current cursor position
-" `pos` in `line`
-function! s:findTargetBwd(pos, cnt)
+" `pos` in `text`
+function! s:findTargetBwd(pos, cnt, text)
   let c1 = getchar()
   " abort seek if first char is <Esc>
   if l:c1 == 27 | return -1 | endif
   let c2 = getchar()
-  let line = getline('.')
   let pos = a:pos
   let cnt = a:cnt
 
   while cnt > 0
-    let haystack = l:line[: l:pos - 1]
+    let haystack = a:text[: l:pos - 1]
     let seek = s:seekindex(l:haystack, l:c1, l:c2, len(l:haystack),
       \ 'strridx', 's:compareSeekBwd')
     let l:pos = l:seek - 1 " so as to not repeatedly find the same occurence
@@ -83,47 +81,47 @@ endfunction
 if !get(g:, 'seek_noignorecase', 0) && (&ignorecase || &smartcase
   \ || get(g:, 'seek_ignorecase', 0) || len(get(g:, 'seek_char_aliases', {})))
 
-  function! s:seekindex(line, c1, c2, start, seekfn, comparefn)
+  function! s:seekindex(text, c1, c2, start, seekfn, comparefn)
     let char1 = nr2char(a:c1)
     let char2 = nr2char(a:c2)
     let Index = function(a:seekfn)
     let Compare = function(a:comparefn)
 
-    let seek = Index(a:line, l:char1 . l:char2, a:start)
+    let seek = Index(a:text, l:char1 . l:char2, a:start)
     let pureseek = l:seek
     let [one, two] = ['', '']
 
     " a to z
     if a:c1 >= 97 && a:c1 <= 122
       let l:one = nr2char(a:c1 - 32)
-      let seek2 = Index(a:line, l:one . l:char2, a:start)
+      let seek2 = Index(a:text, l:one . l:char2, a:start)
       if Compare(seek2, l:seek) | let l:seek = seek2 | endif
     elseif l:pureseek != -1 && a:c1 >= 65 && a:c1 <= 90 | return l:pureseek
     else
       let symbol = get(s:charAliases, l:char1, '')
       if l:symbol != ''
         let l:one = l:symbol
-        let seek2 = Index(a:line, l:one . l:char2, a:start)
+        let seek2 = Index(a:text, l:one . l:char2, a:start)
         if Compare(seek2, l:seek) | let l:seek = seek2 | endif
       endif
     endif
 
     if a:c2 >= 97 && a:c2 <= 122
       let l:two = nr2char(a:c2 - 32)
-      let seek3 = Index(a:line, l:char1 . l:two, a:start)
+      let seek3 = Index(a:text, l:char1 . l:two, a:start)
       if Compare(seek3, l:seek) | let l:seek = seek3 | endif
     elseif l:pureseek != -1 && a:c2 >= 65 && a:c2 <= 90 | return l:pureseek
     else
       let symbol = get(s:charAliases, l:char2, '')
       if l:symbol != ''
         let l:two = l:symbol
-        let seek3 = Index(a:line, l:char1 . l:two, a:start)
+        let seek3 = Index(a:text, l:char1 . l:two, a:start)
         if Compare(seek3, l:seek) | let l:seek = seek3 | endif
       endif
     endif
 
     if l:one != '' && l:two != ''
-      let seek4 = Index(a:line, l:one . l:two, a:start)
+      let seek4 = Index(a:text, l:one . l:two, a:start)
       if Compare(seek4, l:seek) | let l:seek = seek4 | endif
     endif
 
@@ -131,14 +129,15 @@ if !get(g:, 'seek_noignorecase', 0) && (&ignorecase || &smartcase
   endfunction
 
 else
-  function! s:seekindex(line, c1, c2, start, seekfn, comparefn)
-    return stridx(a:line, nr2char(a:c1).nr2char(a:c2), a:start)
+  function! s:seekindex(text, c1, c2, start, seekfn, comparefn)
+    return stridx(a:text, nr2char(a:c1).nr2char(a:c2), a:start)
   endfunction
 endif
 
 function! s:seek(plus)
-  let pos = getpos('.')[2]
-  let seek = s:findTargetFwd(l:pos, v:count1)
+  let pos = col('.')
+  let line = getline('.')
+  let seek = s:findTargetFwd(l:pos, v:count1, l:line)
   if l:seek != -1
     call cursor(line('.'), 1 + l:seek + a:plus)
   endif
@@ -151,8 +150,9 @@ function! s:seekOrSubst(plus)
 endfunction
 
 function! s:seekBack(plus)
-  let pos = getpos('.')[2]
-  let seek = s:findTargetBwd(l:pos, v:count1)
+  let pos = col('.')
+  let line = getline('.')
+  let seek = s:findTargetBwd(l:pos, v:count1, l:line)
   if l:seek != -1
     call cursor(line('.'), 1 + l:seek + a:plus)
   endif
@@ -160,8 +160,9 @@ endfunction
 
 function! s:seekJumpPresential(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
-  let pos = getpos('.')[2]
-  let seek = s:findTargetFwd(l:pos, v:count1)
+  let pos = col('.')
+  let line = getline('.')
+  let seek = s:findTargetFwd(l:pos, v:count1, l:line)
   if l:seek != -1
     call cursor(line('.'), 1 + l:seek)
     execute 'normal! v'.a:textobj
@@ -170,8 +171,9 @@ endfunction
 
 function! s:seekBackJumpPresential(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
-  let pos = getpos('.')[2]
-  let seek = s:findTargetBwd(l:pos, v:count1)
+  let pos = col('.')
+  let line = getline('.')
+  let seek = s:findTargetBwd(l:pos, v:count1, l:line)
   if l:seek != -1
     call cursor(line('.'), 1 + l:seek)
     execute 'normal! v'.a:textobj
@@ -182,7 +184,8 @@ function! s:seekJumpRemote(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let cursor = getpos('.')
   let pos = l:cursor[2]
-  let seek = s:findTargetFwd(l:pos, v:count1)
+  let line = getline('.')
+  let seek = s:findTargetFwd(l:pos, v:count1, l:line)
 
   let cmd = "execute 'call cursor(" . l:cursor[1]. ", " . l:pos . ")'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
@@ -197,12 +200,13 @@ function! s:seekBackJumpRemote(textobj)
   if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let cursor = getpos('.')
   let pos = l:cursor[2]
-  let seek = s:findTargetBwd(l:pos, v:count1)
+  let line = getline('.')
+  let seek = s:findTargetBwd(l:pos, v:count1, l:line)
 
   " the remote back jump needs special treatment in repositioning the cursor,
   " to account for possible characters deleted; we do this by diffing the line
   " length before and after i.e. originalPos - (beforeLen - afterLen)
-  let before = len(getline('.'))
+  let before = len(l:line)
   let cmd = "execute 'call cursor(" . l:cursor[1] . ", "
     \ . (l:pos - l:before) . " + len(getline(\".\")))'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
@@ -212,7 +216,6 @@ function! s:seekBackJumpRemote(textobj)
     execute 'normal! v'.a:textobj
   endif
 endfunction
-
 
 " credit: Luc Hermitte
 " http://code.google.com/p/lh-vim/source/search?q=register_for&origq=register_for&btnG=Search+Trunk
