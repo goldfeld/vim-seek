@@ -160,7 +160,11 @@ function! s:seekBack(plus)
 endfunction
 
 function! s:seekJumpPresential(textobj)
-  if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
+  if &diff && get(g:, 'seek_use_vanilla_binds_in_diffmode', 0)
+    \ && v:operator == 'd'
+    if a:textobj == 'iw' | diffput | return | endif
+    if a:textobj == 'aw' | diffget | return | endif
+  endif
   let pos = col('.')
   let line = getline('.')
   let seek = s:findTargetFwd(l:pos, v:count1, l:line)
@@ -171,7 +175,6 @@ function! s:seekJumpPresential(textobj)
 endfunction
 
 function! s:seekBackJumpPresential(textobj)
-  if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let pos = col('.')
   let line = getline('.')
   let seek = s:findTargetBwd(l:pos, v:count1, l:line)
@@ -182,7 +185,6 @@ function! s:seekBackJumpPresential(textobj)
 endfunction
 
 function! s:seekJumpRemote(textobj)
-  if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let cursor = getpos('.')
   let pos = l:cursor[2]
   let line = getline('.')
@@ -198,7 +200,6 @@ function! s:seekJumpRemote(textobj)
 endfunction
 
 function! s:seekBackJumpRemote(textobj)
-  if &diff && !get(g:, 'seek_enable_jumps_in_diff', 0) | return | endif
   let cursor = getpos('.')
   let pos = l:cursor[2]
   let line = getline('.')
