@@ -1,4 +1,4 @@
-# Introduction
+# Introduction [![Flattr this plugin](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=goldfeld&url=https://github.com/goldfeld/vim-seek&title=vim-seek&language=en&tags=github&category=software)
 
 Seek is a vim plugin that aims to make inline navigation effortless. The motion seek, summoned with `s` by default, is similar to `f`, but instead of **one** it expects **two** characters. This greatly reduces the possible matches within the line and mostly allows you to get anywhere in a line with three keystrokes. Your cursor is left off at the first character typed, so if you seek to "th" your cursor will now be at "t". The forward seek motion is complemented by `S`, which seeks backwards.
 
@@ -31,7 +31,6 @@ My personal favorites, `r` (remote jump) and `p` (presential jump) act on the ne
 Whereas `r` and `p` use the inner word text object, the respective `u` and `o` are the equivalent outer word `aw`.
 
 To enable the jumping mappings you need to add the following to your vimrc: `let g:seek_enable_jumps = 1`. They don't work in diff mode by default, because the mode uses `dp` and `do` for other purposes, but you can override this by also adding `let g:seek_enable_jumps_in_diff = 1` to your vimrc.
-
 
 As expected, all these advanced mappings are complemented by their capital letter versions, which operate backwards.
 
