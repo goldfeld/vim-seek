@@ -210,7 +210,8 @@ function! s:seekJumpRemote(textobj)
   let line = getline('.')
   let seek = s:findTargetFwd(l:pos, v:count1, l:line)
 
-  let cmd = "execute 'call cursor(" . l:cursor[1]. ", " . l:pos . ")'"
+  let cmd = s:listTrimCmd(1, 2)
+    \ . "execute 'call cursor(" . l:cursor[1]. ", " . l:pos . ")'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
 
   if l:seek != -1
@@ -225,11 +226,12 @@ function! s:seekBackJumpRemote(textobj)
   let line = getline('.')
   let seek = s:findTargetBwd(l:pos, v:count1, l:line)
 
+  let cmd = s:listTrimCmd(0, 1)
   " the remote back jump needs special treatment in repositioning the cursor,
   " to account for possible characters deleted; we do this by diffing the line
   " length before and after i.e. originalPos - (beforeLen - afterLen)
   let before = len(l:line)
-  let cmd = "execute 'call cursor(" . l:cursor[1] . ", "
+  let l:cmd = "execute 'call cursor(" . l:cursor[1] . ", "
     \ . (l:pos - l:before) . " + len(getline(\".\")))'"
   call s:registerCommand('CursorMoved', cmd, 'remoteJump')
 
@@ -237,6 +239,16 @@ function! s:seekBackJumpRemote(textobj)
     call cursor(line('.'), 1 + l:seek)
     execute 'normal! v'.a:textobj
   endif
+endfunction
+
+function! s:listTrimCmd(here, behind)
+  let ch = get(g:, 'seek_listchars', ',')
+  return "let [s:line, s:pos] = [getline('.'), col('.')]"
+    \ . " | let s:here = s:line[s:pos - " . a:here . "] =~ '[" . l:ch . "]'"
+    \ . " | let s:behind = s:line[s:pos - " . a:behind . "] =~ '[" . l:ch . "]'"
+    \ . " | if s:here && s:behind | execute 'normal! x'"
+    \ . " | elseif s:here && !s:behind | execute 'normal! xx'"
+    \ . " | elseif !s:here && s:behind | execute 'normal! hx' | endif | "
 endfunction
 
 " credit: Luc Hermitte
