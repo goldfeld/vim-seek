@@ -1,57 +1,71 @@
 * vim-seek
 
-Seek makes navigating long lines effortless, acting like f but taking
-two characters.
+Seek is a Vim plugin with the simpleminded goal of making long-line
+navigation effortless, mostly acting like Vim's f but taking two
+characters instead.
 
 ** Introduction
 
-Seek is a vim plugin that aims to be your go-to characterwise motion
-workhorse. The motion seek, summoned with =s= by default, is similar
-to =f=, but instead of *one* it expects *two* characters. This greatly
-reduces the possible matches within the line and mostly allows you to
-get anywhere in a line with three keystrokes. Your cursor is left off
-at the first character typed, so if you seek to "th" your cursor will
-now be at "t". The forward seek motion is complemented by =S=, which
-seeks backwards.
+This plugin introduces the /seek/ motion, summoned with =s= by
+default. Instead of *one* character like =f=, it expects *two*
+characters to be typed. This greatly reduces the possible matches
+within the line and mostly allows you to get anywhere in a line with
+just three keystrokes. Limiting movement to the current line, much
+like =f= does, is a usability consideration, making seek predictable,
+precise and solving a defined problem: it's a motion for within the
+line, not cross-line. If there's no match, your cursor doesn't go
+anywhere. Otherwise, the cursor is left off at the first character
+typed, so if you seek to "th" your cursor will now be at "t". The
+forward seek motion is complemented by =S=, which seeks backwards.
+
+There are other unique features, notably leaps (see /Leaping motions/
+section), but if you're looking for something more featureful,
+including extending movement across lines and even doing some of what
+EasyMotion does, you should look for /vim-sneak/, which fortunately
+picked up from my inactivity on vim-seek development, though also
+probably because vim-seek has been quite opinionated from the
+beginning.
 
 ** Motivation
 
 The idea was borne out of frustration with getting at arbitrary points
 in longer lines, especially ones where navigating by word—on top of
-needing precise counts—gets mangled by symbols. The motion =f= often
-misfires by taking you to an earlier spot than where you aimed. And a
-full =/= search is often too much for a simple seek, needing an extra
-=<Enter>= and leaving a highlight, and might take you away from the
-current line. Seek only works within the line.
+needing precise counts—gets mangled by symbols. It also filled a great
+need for faster navigation and editing of prose. The motion =f= often
+misfires by taking you to an earlier spot than where you aimed, and a
+full =/= search is too cumbersome, needing an extra =<Enter>= and
+leaving a highlight, and worst of all, might accidentally take you far
+away from the current line. Seek only works within the line (that's a
+feature.)
 
 ** What about substitute?
 
-Vim maps the key =s= to substitute. That it is the perfect mnemonic to
-seek is a fortunate coincidence, but the choice was made because
-substitute (without a count) is an often inefficient command,
-being—ironically—easily substituted by others. Seek doesn't take a
-count by default, so whenever you supply a count to =s= it will map to
-the substitute command. However, if you don't use the substitute
-commmand at all, you can add =let g:seek_subst_disable = 1= to your
-=.vimrc= in order to allow counts for actual seeks.
+Vim, by default, maps the =s= key to substitute. That it is the
+perfect mnemonic to seek is a fortunate coincidence, but the choice
+was made because substitute (without a count) is an often inefficient
+command, being—ironically—easily substituted by others. Seek doesn't
+take a count by default, so whenever you supply a count to =s= it will
+map to the substitute command. However, if you don't use the
+substitute commmand at all, you can add =let g:seek_subst_disable = 1=
+to your =.vimrc= in order to allow counts for actual seeks.
 
 The single character substitution can be accomplished with either =1s=
 or =cl=. And =S=, which is remapped to seek backwards, is completely
 substituted by =cc=.
 
 However, if you don't want to give up substitute, you can scroll down
-to the Customization section.
+to the /Customization/ section.
 
 ** I already use EasyMotion..
 
-Seek solves a different problem, and both are powerful tools. I use
-EasyMotion myself and love it—it's great for navigating across lines
-and around the file. But within the line, seek has more speed, for a
-very important reason: with seek you already know the keys you need to
-type before you even type =s=. Using EasyMotion there's a split second
-delay for it to generate the targets and another for your brain to
-process them. With seek you just type three quick keystrokes; you
-already know what to type.
+Seek solves a different problem, and both are powerful tools.
+EasyMotion is great for navigating across lines and around the
+file. But within the line, seek has more speed, for a very important
+reason: with seek you already know the keys you need to type before
+you even type =s=. Using EasyMotion there's a split second delay for
+it to generate the targets and another for your brain to process
+them. With seek you just type three quick keystrokes; you already know
+what to type.
 
 ** Advanced
 
@@ -71,12 +85,13 @@ on the next word containing the characters typed. They're the
 equivalent of =iw=, but =r= snipes the target word from a distance,
 and =p= leaps to the target and stays there. So you can use =yrth= to
 yank the next word containing "th" without leaving your position (in
-reality vim goes there and leaps back), and that's useful for pasting
-it to where you are. Or you can type =code= to leap to the next word
-with "de", deleting around it (aw) and leaving you in insert mode.
+reality Vim goes there and leaps back, fast enough that you don't
+see), and that's useful for pasting it to where you are. Or you can
+type =code= to leap to the next word with "de", deleting around it
+(aw) and leaving you in insert mode.
 
-Whereas =r= and =p= use the inner word text object, the respective =u=
-and =o= are the equivalent outer word =aw=.
+So whereas =r= and =p= use the inner word text object, the respective
+=u= and =o= are the equivalent outer word =aw=.
 
 To enable the leaping mappings you need to add the following to your
 vimrc: =let g:seek_enable_jumps = 1=. They don't work in diff mode by
@@ -90,7 +105,9 @@ capital letter versions, which operate backwards.
 *** Customization
 
 You can customize any of the keys that seek binds by adding lines such
-as the following to your vimrc.
+as the following to your vimrc. All the alternative keys shown below
+are just examples of customization, you can bind whichever keys you
+want.
 
 Change s and S:
 
